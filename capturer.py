@@ -54,7 +54,7 @@ def getImgFromSina(uid, headers, path):
             print('directory: ' + path)
             break
 
-        # 3. get all the img url of each imgList
+        # 3. download all the imgs from each imgList
         print('PAGE '+ str(numOfPage))
         imgUrls = []
         for imglist in imgListUrls:
@@ -66,7 +66,7 @@ def getImgFromSina(uid, headers, path):
             # 3.2 parse the html and find all the img url of each imglist
             imgs = imgre.findall(html)
             
-            # 3.3 download imgs of each imglist
+            # 3.3 download imgs from each imglist
             for img in imgs:
                 imgUrl = img[0].replace(img[1], 'large')
                 numOfImg += 1
@@ -78,16 +78,17 @@ def getImgFromSina(uid, headers, path):
         print('')
 
 
+#path = '/home/litreily/web/www/html/images'
+path = '/mnt/d/litreily/Pictures/python'
+
 # user id
 uids = ['2657006573','2173752092','3261134763','6101208662','5688659894','2174219060']
 uid = uids[5]
 
-#path = '/home/litreily/web/www/html/images'
-path = '/mnt/d/litreily/Pictures/python'
-
 # cookie is form the above url->network->request headers
+cookies = ''
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-           'Cookie': ''}
+           'Cookie': cookies}
 
 # capture imgs from sina
 getImgFromSina(uid, headers, path + '/sina')
