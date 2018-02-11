@@ -8,96 +8,86 @@ import urllib.request
 import urllib
 import os
 
-webType = 'default'
-encodeType = {'default':'UTF-8', 'sina':'gb2312'}
-
-def getStaticHtml(url):
-    global webType
-    global encodeType
-
-    page = urllib.request.urlopen(url)
-    html = page.read().decode(encodeType[webType])
-    return html
-
-def getDynamicHtml(url, headers):
-    global webType
-    global encodeType
-
+def getHtml(url, headers):
     req = urllib.request.Request(url, headers = headers)
     page = urllib.request.urlopen(req)
-    html = page.read().decode(encodeType[webType])
+    html = page.read().decode('UTF-8')
     return html
 
-def saveHtml(html):
-    txt='result.html'  
-    f = open(txt,"w+")  
+def saveHtml(path, name, html):
+    if not os.path.isdir(path):
+        os.makedirs(path)
+    paths = path + '/' + name
+    f = open(paths,"w")
     f.write(html)
-
-def saveImgFromStaticWeb(html, path): 
-    reg = r'src="(.+?\.jpg)"'
-    imgre = re.compile(reg)
-    imgUrls = imgre.findall(html)
-    x = 0
+                                                              
+def getImgFromSina(uid, headers, path):
+    filterMode = 1      # 0-all 1-original 2-pictures
+    numOfPage = 1
+    numOfBlog = 0
+    numOfImg = 0
+    
+    path = str(path) + '/' + str(uid)
     if not os.path.isdir(path):
         os.makedirs(path)
     paths = path+'/'
 
-    for imgUrl in imgUrls:
-        x = x + 1
-        urllib.request.urlretrieve(imgUrl,'{}{}.jpg'.format(paths,x))
-        print("%d.jpg" % (x))
-                                                               
-def saveImgFromSina(uid, dir):
-    count = 0
-    page = 1
-
+    # regular expression of imgList and img
+    imgListReg = r'href="(https://weibo.cn/mblog/picAll/.{9}\?rl=2)"'
+    imgReg = r'src="(http://w.{2}\.sinaimg.cn/(.{6,8})/.{32,33}.(jpg|gif))" alt'
+    imgListre = re.compile(imgListReg)
+    imgre = re.compile(imgReg)
+    
     print('start capture picture of uid:' + str(uid))
     while True:
-        reg = r'src="http://w(.{2})\.sinaimg.cn/(wap180|square)/(.{32,33}.(jpg|gif))" alt'
-        imgre = re.compile(reg)
-        url = r'http://weibo.cn/album/albummblog/?rl=11&fuid='+ str(uid) + '&page='+ str(page)
-        # cookie is form the above url->network->request headers
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-                   'Cookie': 'YOUR COOKIES IN THE ABOVE URL'}
-        html = getDynamicHtml(url, headers)
-        saveHtml(html)
-        imgIds = imgre.findall(html)
-        if len(imgIds) == 0:
-            print("capture complete!")
-            break;
+        url = r'https://weibo.cn/'+ str(uid) +'/profile?filter='+ str(filterMode)  +'&page=' + str(numOfPage)
 
-        imgUrls = []
-        for id in imgIds:
-            imgUrl = 'http://w' + id[0] + '.sinaimg.cn/large/' + id[2]
-            imgUrls.append(imgUrl)
-        imgUrls.reverse()
-
-        path = str(dir) + '/' + str(uid)
-        if not os.path.isdir(path):
-            os.makedirs(path)
-        paths = path+'/'
+        # 1. get html of each page url
+        html = getHtml(url, headers)
+        saveHtml(paths + 'html', 'page_' + str(numOfPage) +'.html', html)
         
-        print('page '+ str(page))
-        for imgUrl in imgUrls:
-            count += 1
-            # display the raw url of images
-            print('%d\t%s' % (count, imgUrl))
-            urllib.request.urlretrieve(imgUrl, '{}{}.{}'.format(paths, count, imgUrl[-3:]))
-        page += 1
+        # 2. parse the html and find all the imgList Url of each page
+        imgListUrls = imgListre.findall(html)
+        if not imgListUrls:
+            print('capture complete!')
+            print('captured pages: %d, blogs: %d, imgs: %d' % (numOfPage, numOfBlog, numOfImg))
+            print('directory: ' + path)
+            break
+
+        # 3. get all the img url of each imgList
+        print('PAGE '+ str(numOfPage))
+        imgUrls = []
+        for imglist in imgListUrls:
+            # 3.1 get html of imglist
+            numOfBlog += 1
+            print('blog_'+ str(numOfBlog)+ '\t' + imglist)
+            html = getHtml(imglist, headers)
+            
+            # 3.2 parse the html and find all the img url of each imglist
+            imgs = imgre.findall(html)
+            
+            # 3.3 download imgs of each imglist
+            for img in imgs:
+                imgUrl = img[0].replace(img[1], 'large')
+                numOfImg += 1
+                # display the raw url of images
+                print('\t%d\t%s' % (numOfImg, imgUrl))
+                urllib.request.urlretrieve(imgUrl, '{}{}.{}'.format(paths, numOfImg, img[2]))
+
+        numOfPage += 1
         print('')
 
 
-dir = '/home/litreily/web/www/html/images'
+# user id
+uids = ['2657006573','2173752092','3261134763','6101208662','5688659894','2174219060']
+uid = uids[5]
 
-# capture imgs from static web page
-'''
-url = r"http://blog.csdn.net/ben_ben_niao/article/details/40677869"
-html = getStaticHtml(url)
-saveHtml(html)
-saveImgFromStaticWeb(html,dir + '/static')
-'''
+#path = '/home/litreily/web/www/html/images'
+path = '/mnt/d/litreily/Pictures/python'
+
+# cookie is form the above url->network->request headers
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+           'Cookie': ''}
 
 # capture imgs from sina
-uids = ['2173752092', '2657006573']
-uid = uids[1]
-saveImgFromSina(uid, dir)
+getImgFromSina(uid, headers, path + '/sina')
