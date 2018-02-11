@@ -6,15 +6,9 @@ import urllib.request
 import urllib
 import os
 
-webType = 'default'
-encodeType = {'default':'UTF-8', 'sina':'gb2312'}
-
 def getStaticHtml(url):
-    global webType
-    global encodeType
-
     page = urllib.request.urlopen(url)
-    html = page.read().decode(encodeType[webType])
+    html = page.read().decode('UTF-8')
     return html
 
 def saveHtml(html):
