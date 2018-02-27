@@ -82,8 +82,8 @@ def getImgFromSina(uid, headers, path):
 path = '/mnt/d/litreily/Pictures/python'
 
 # user id
-uids = ['2657006573','2173752092','3261134763','6101208662','5688659894','2174219060']
-uid = uids[5]
+uids = ['2657006573','2173752092','3261134763','2174219060']
+uid = uids[2]
 
 # cookie is form the above url->network->request headers
 cookies = ''
