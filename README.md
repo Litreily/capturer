@@ -12,5 +12,5 @@ A capture tool used to capture pictures from web like Sina, it's powered by pyth
 
 ### Sina
 
-- uid: user-id(10 numbers) of sina weibo that you want to capture
-- cookies: your cookies after login the sina weibo
+- `uid`: user-id(10 numbers) of sina weibo that you want to capture
+- `cookies`: your cookies after login the sina weibo
