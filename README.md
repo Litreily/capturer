@@ -5,7 +5,7 @@ A capture tool used to capture pictures from web like Sina, it's powered by pyth
 ## How to use
 
 - install python3
-- edit `config.py`, update your [Parameters](#Parameters) of each kind of web
+- edit `config.py`, update your [Parameters](#parameters) of each kind of web
 - running `capturer.py` with bash or IDE of python3
 
 ## Parameters
