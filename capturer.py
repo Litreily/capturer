@@ -7,6 +7,7 @@ import re
 import urllib.request
 import urllib
 import os
+from bs4 import BeautifulSoup
 
 def getHtml(url, headers):
     req = urllib.request.Request(url, headers = headers)
@@ -34,12 +35,13 @@ def getImgFromSina(uid, headers, path):
 
     # regular expression of imgList and img
     imgListReg = r'href="(https://weibo.cn/mblog/picAll/.{9}\?rl=2)"'
-    imgReg = r'src="(http://w.{2}\.sinaimg.cn/(.{6,8})/.{32,33}.(jpg|gif))" alt'
+    imgReg = r'src="(http://w.{2}\.sinaimg.cn/(.{6,8})/.{32,33}.(jpg|gif))"'
     imgListre = re.compile(imgListReg)
     imgre = re.compile(imgReg)
     
     print('start capture picture of uid:' + str(uid))
     while True:
+        # https://weibo.cn/3261134763/profile?filter=1&page=1
         url = r'https://weibo.cn/'+ str(uid) +'/profile?filter='+ str(filterMode)  +'&page=' + str(numOfPage)
 
         # 1. get html of each page url
@@ -47,32 +49,34 @@ def getImgFromSina(uid, headers, path):
         saveHtml(paths + 'html', 'page_' + str(numOfPage) +'.html', html)
         
         # 2. parse the html and find all the imgList Url of each page
-        imgListUrls = imgListre.findall(html)
-        if not imgListUrls:
+        soup = BeautifulSoup(html, "html.parser")
+        # <div class="c" id="M_G4gb5pY8t"><div>
+        blogs = soup.body.find_all(attrs={"id":re.compile(r"^M_")}, recursive=False)
+        numOfBlog += len(blogs)
+        imgUrls = []        
+        for blog in blogs:
+            blog = str(blog)
+            imgListUrl = imgListre.findall(blog)
+            if not imgListUrl:
+                imgUrls += imgre.findall(blog)
+            else:
+                html = getHtml(imgListUrl[0], headers)
+                imgUrls += imgre.findall(html)
+
+        if not imgUrls:
             print('capture complete!')
             print('captured pages: %d, blogs: %d, imgs: %d' % (numOfPage, numOfBlog, numOfImg))
             print('directory: ' + path)
             break
 
         # 3. download all the imgs from each imgList
-        print('PAGE '+ str(numOfPage))
-        imgUrls = []
-        for imglist in imgListUrls:
-            # 3.1 get html of imglist
-            numOfBlog += 1
-            print('blog_'+ str(numOfBlog)+ '\t' + imglist)
-            html = getHtml(imglist, headers)
-            
-            # 3.2 parse the html and find all the img url of each imglist
-            imgs = imgre.findall(html)
-            
-            # 3.3 download imgs from each imglist
-            for img in imgs:
-                imgUrl = img[0].replace(img[1], 'large')
-                numOfImg += 1
-                # display the raw url of images
-                print('\t%d\t%s' % (numOfImg, imgUrl))
-                urllib.request.urlretrieve(imgUrl, '{}{}.{}'.format(paths, numOfImg, img[2]))
+        print('PAGE '+ str(numOfPage) + ' with ' + str(len(imgUrls)) + ' images')
+        for img in imgUrls:
+            imgUrl = img[0].replace(img[1], 'large')
+            numOfImg += 1
+            # display the raw url of images
+            print('\t%d\t%s' % (numOfImg, imgUrl))
+            urllib.request.urlretrieve(imgUrl, '{}{}.{}'.format(paths, numOfImg, img[2]))
 
         numOfPage += 1
         print('')
@@ -80,10 +84,9 @@ def getImgFromSina(uid, headers, path):
 
 #path = '/home/litreily/web/www/html/images'
 path = '/mnt/d/litreily/Pictures/python'
-
 # user id
 uids = ['2657006573','2173752092','3261134763','2174219060']
-uid = uids[2]
+uid = uids[0]
 
 # cookie is form the above url->network->request headers
 cookies = ''
