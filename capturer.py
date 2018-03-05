@@ -23,7 +23,7 @@ def saveHtml(path, name, html):
     f.write(html)
                                                               
 def getImgFromSina(uid, headers, path):
-    filterMode = 1      # 0-all 1-original 2-pictures
+    filterMode = 0      # 0-all 1-original 2-pictures
     numOfPage = 1
     numOfBlog = 0
     numOfImg = 0
@@ -74,24 +74,26 @@ def getImgFromSina(uid, headers, path):
         for img in imgUrls:
             imgUrl = img[0].replace(img[1], 'large')
             numOfImg += 1
-            # display the raw url of images
-            print('\t%d\t%s' % (numOfImg, imgUrl))
-            urllib.request.urlretrieve(imgUrl, '{}{}.{}'.format(paths, numOfImg, img[2]))
-
+            try:
+                urllib.request.urlretrieve(imgUrl, '{}{}.{}'.format(paths, numOfImg, img[2]))
+                # display the raw url of images
+                print('\t%d\t%s' % (numOfImg, imgUrl))
+            except Exception as err:
+                print(err)
+                print('\t%d\t%s failed' % (numOfImg, imgUrl))
         numOfPage += 1
         print('')
 
+if __name__ == "__main__":
+    path = '/mnt/d/litreily/Pictures/python'
+    # user id
+    uids = ['2657006573','2173752092','3261134763','2174219060']
+    uid = uids[0]
 
-#path = '/home/litreily/web/www/html/images'
-path = '/mnt/d/litreily/Pictures/python'
-# user id
-uids = ['2657006573','2173752092','3261134763','2174219060']
-uid = uids[0]
+    # cookie is form the above url->network->request headers
+    cookies = ''
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+            'Cookie': cookies}
 
-# cookie is form the above url->network->request headers
-cookies = ''
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-           'Cookie': cookies}
-
-# capture imgs from sina
-getImgFromSina(uid, headers, path + '/sina')
+    # capture imgs from sina
+    getImgFromSina(uid, headers, path + '/sina')
