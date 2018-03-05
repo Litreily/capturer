@@ -10,9 +10,13 @@ import os
 from bs4 import BeautifulSoup
 
 def getHtml(url, headers):
-    req = urllib.request.Request(url, headers = headers)
-    page = urllib.request.urlopen(req)
-    html = page.read().decode('UTF-8')
+    try:
+        req = urllib.request.Request(url, headers = headers)
+        page = urllib.request.urlopen(req)
+        html = page.read().decode('UTF-8')
+    except Exception:
+        print("get "+ url + " failed")
+        return None
     return html
 
 def saveHtml(path, name, html):
@@ -23,7 +27,7 @@ def saveHtml(path, name, html):
     f.write(html)
                                                               
 def getImgFromSina(uid, headers, path):
-    filterMode = 0      # 0-all 1-original 2-pictures
+    filterMode = 1      # 0-all 1-original 2-pictures
     numOfPage = 1
     numOfBlog = 0
     numOfImg = 0
@@ -58,8 +62,10 @@ def getImgFromSina(uid, headers, path):
             blog = str(blog)
             imgListUrl = imgListre.findall(blog)
             if not imgListUrl:
+                # 2.1 get img-url from blog that have only one pic
                 imgUrls += imgre.findall(blog)
             else:
+                # 2.2 get img-urls from blog that have group pics
                 html = getHtml(imgListUrl[0], headers)
                 imgUrls += imgre.findall(html)
 
