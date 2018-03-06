@@ -30,10 +30,10 @@ def saveImgFromStaticWeb(html, path):
         urllib.request.urlretrieve(imgUrl,'{}{}.jpg'.format(paths,x))
         print("%d.jpg" % (x))
 
-# capture imgs from static web page
-#dir = '/home/litreily/web/www/html/images'
-dir = '/mnt/d/litreily/Pictures/python'
-url = r"http://blog.csdn.net/ben_ben_niao/article/details/40677869"
-html = getStaticHtml(url)
-saveHtml(html)
-saveImgFromStaticWeb(html,dir + '/static')
+if __name__ == '__main__':
+    # capture imgs from static web page
+    dir = '/mnt/d/litreily/Pictures/python'
+    url = r"http://blog.csdn.net/ben_ben_niao/article/details/40677869"
+    html = getStaticHtml(url)
+    saveHtml(html)
+    saveImgFromStaticWeb(html,dir + '/static')
