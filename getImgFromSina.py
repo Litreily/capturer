@@ -1,5 +1,5 @@
 # author: litreily
-# date: 2018:02:05
+# date: 2018.02.05
 # description: capture pictures from sina
 
 import re
@@ -38,9 +38,9 @@ def getImgFromSina(uid, headers, path):
 
     # regular expression of imgList and img
     imgListReg = r'href="(https://weibo.cn/mblog/picAll/.{9}\?rl=2)"'
+    imgListPattern = re.compile(imgListReg)
     imgReg = r'src="(http://w.{2}\.sinaimg.cn/(.{6,8})/.{32,33}.(jpg|gif))"'
-    imgListre = re.compile(imgListReg)
-    imgre = re.compile(imgReg)
+    imgPattern = re.compile(imgReg)
     
     print('start capture picture of uid:' + str(uid))
     while True:
@@ -59,14 +59,14 @@ def getImgFromSina(uid, headers, path):
         imgUrls = []        
         for blog in blogs:
             blog = str(blog)
-            imgListUrl = imgListre.findall(blog)
+            imgListUrl = imgListPattern.findall(blog)
             if not imgListUrl:
                 # 2.1 get img-url from blog that have only one pic
-                imgUrls += imgre.findall(blog)
+                imgUrls += imgPattern.findall(blog)
             else:
                 # 2.2 get img-urls from blog that have group pics
                 html = getHtml(imgListUrl[0], headers)
-                imgUrls += imgre.findall(html)
+                imgUrls += imgPattern.findall(html)
 
         if not imgUrls:
             print('capture complete!')
@@ -88,3 +88,20 @@ def getImgFromSina(uid, headers, path):
                 print('\t%d\t%s failed' % (numOfImg, imgUrl))
         numOfPage += 1
         print('')
+
+def main():
+    path = '/mnt/d/litreily/Pictures/python'
+    # user id
+    # uids = ['2657006573','2173752092','3261134763','2174219060']
+    uid = '6128705439'
+
+    # cookie is form the above url->network->request headers
+    cookies = ''
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+            'Cookie': cookies}
+
+    # capture imgs from sina
+    getImgFromSina(uid, headers, path + '/sina')
+
+if __name__ == '__main__':
+    main()
