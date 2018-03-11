@@ -1,20 +1,23 @@
 #!/usr/bin/python3
 # author: litreily
-# date: 2018:03:06
-# description: capture pictures from sina
+# date: 2018.03.06
+# description: capture pictures from webs
 
 import getImgFromSina as sina
+import getImgFromLofter as lofter
 
 if __name__ == '__main__':
-    path = '/mnt/d/litreily/Pictures/python'
-    # user id
-    uids = ['2657006573','2173752092','3261134763','2174219060']
-    uid = uids[3]
+    webs = {
+        '1': sina,
+        '2': lofter
+    }
 
-    # cookie is form the above url->network->request headers
-    cookies = ''
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-            'Cookie': cookies}
+    tips = '''please select web you want to caputer(1-2, default=1)
+    1 - sina
+    2 - lofter
+You want to captuer from:'''
 
-    # capture imgs from sina
-    sina.getImgFromSina(uid, headers, path + '/sina')
+    select = input(tips)
+    if select not in webs:
+        select = '1'
+    webs.get(select).main()
