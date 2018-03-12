@@ -8,12 +8,13 @@ import random
 import time
 import re
 import os
+import platform
 
-def getRootPath(username, sysType):
-    if sysType == 'windows':
-        rootPath = 'D:/litreily/Pictures/python/lofter/%s' % username
-    else:
-        rootPath = '/mnt/d/litreily/Pictures/python/lofter/%s' % username
+def getRootPath(username):
+    rootPath = {
+        'Windows': 'D:/litreily/Pictures/python/lofter/%s' % username,
+        'Linux': '/mnt/d/litreily/Pictures/python/lofter/%s' % username
+    }.get(platform.system())
     if not os.path.isdir(rootPath):
         os.makedirs(rootPath)
     return rootPath
@@ -24,6 +25,8 @@ def getHtml(url, data, headers):
     except Exception as e:
         print("get "+ url + " failed\n" + str(e))
         return None
+    finally:
+        pass
     return html
 
 def getUserID(username):
@@ -34,8 +37,9 @@ def getUserID(username):
         print('The blogID of %s is: %s' % (username, blogID))
         return blogID
     except Exception as e:
-        print('get blogID from http://' +username + '.lofter.com failed\n' + str(e))
-        return None
+        print('get blogID from http://' +username + '.lofter.com failed\n')
+        print('please check your username.')
+        exit(1)
 
 def getNextTimeStamp(html, timePattern):
     if not html:
@@ -95,8 +99,7 @@ def main():
     blogUrlPattern = re.compile(r's[\d]*\.permalink="([\w_]*)"') 
     
     # creat path to save imgs
-    sysType = 'windows'
-    rootPath = getRootPath(username, sysType)
+    rootPath = getRootPath(username)
 
     # parameters of post packet
     url = 'http://'+ username + '.lofter.com/dwr/call/plaincall/ArchiveBean.getArchivePostByTime.dwr'

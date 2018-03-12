@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # author: litreily
 # date: 2018.02.05
 # description: capture pictures from sina
@@ -6,7 +7,17 @@ import re
 import urllib.request
 import urllib
 import os
+import platform
 from bs4 import BeautifulSoup
+
+def getRootPath(uid):
+    rootPath = {
+        'Windows': 'D:/litreily/Pictures/python/sina/%s' % uid,
+        'Linux': '/mnt/d/litreily/Pictures/python/sina/%s' % uid
+    }.get(platform.system())
+    if not os.path.isdir(rootPath):
+        os.makedirs(rootPath)
+    return rootPath
 
 def getHtml(url, headers):
     try:
@@ -18,23 +29,11 @@ def getHtml(url, headers):
         return None
     return html
 
-def saveHtml(path, name, html):
-    if not os.path.isdir(path):
-        os.makedirs(path)
-    paths = path + '/' + name
-    f = open(paths,"w")
-    f.write(html)
-                                                              
 def getImgFromSina(uid, headers, path):
     filterMode = 1      # 0-all 1-original 2-pictures
     numOfPage = 1
     numOfBlog = 0
     numOfImg = 0
-    
-    path = str(path) + '/' + str(uid)
-    if not os.path.isdir(path):
-        os.makedirs(path)
-    paths = path+'/'
 
     # regular expression of imgList and img
     imgListReg = r'href="(https://weibo.cn/mblog/picAll/.{9}\?rl=2)"'
@@ -49,7 +48,6 @@ def getImgFromSina(uid, headers, path):
 
         # 1. get html of each page url
         html = getHtml(url, headers)
-        saveHtml(paths + 'html', 'page_' + str(numOfPage) +'.html', html)
         
         # 2. parse the html and find all the imgList Url of each page
         soup = BeautifulSoup(html, "html.parser")
@@ -80,7 +78,7 @@ def getImgFromSina(uid, headers, path):
             imgUrl = img[0].replace(img[1], 'large')
             numOfImg += 1
             try:
-                urllib.request.urlretrieve(imgUrl, '{}{}.{}'.format(paths, numOfImg, img[2]))
+                urllib.request.urlretrieve(imgUrl, '{}/{}.{}'.format(path, numOfImg, img[2]))
                 # display the raw url of images
                 print('\t%d\t%s' % (numOfImg, imgUrl))
             except Exception as err:
@@ -90,10 +88,9 @@ def getImgFromSina(uid, headers, path):
         print('')
 
 def main():
-    path = '/mnt/d/litreily/Pictures/python'
-    # user id
     # uids = ['2657006573','2173752092','3261134763','2174219060']
     uid = '6128705439'
+    path = getRootPath(uid)
 
     # cookie is form the above url->network->request headers
     cookies = ''
@@ -101,7 +98,7 @@ def main():
             'Cookie': cookies}
 
     # capture imgs from sina
-    getImgFromSina(uid, headers, path + '/sina')
+    getImgFromSina(uid, headers, path)
 
 if __name__ == '__main__':
     main()
