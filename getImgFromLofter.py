@@ -58,7 +58,7 @@ def getImgUrlsFromBlog(username, blog, headers):
 
 def downloadImg(imgUrl, path):
     # headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'}
-    for i in range(1,2):
+    for i in range(1,3):
         try:
             imgRequest = requests.get(imgUrl, timeout=10)
             if imgRequest.status_code == 200:
