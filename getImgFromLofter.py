@@ -3,27 +3,6 @@
 # date: 2018.03.07
 # description: capture pictures from lofter
 
-# import BytesIO
-# import urllib.parse
-# import urllib.request
-# import urllib
-# import gzip
-# def getHtml(url, data, headers):
-#     try:
-#         req = urllib.request.Request(url, data, headers)
-#         page = urllib.request.urlopen(req)
-#         content = page.read() # content-encoding: gzip, need unzip
-#         buff = BytesIO(content) # transfer content to file
-#         f = gzip.GzipFile(fileobj=buff)
-#         html = f.read().decode('utf-8')
-#         print(html)
-#     except Exception:
-#         print("get "+ url + " failed")
-#         print(Exception)
-#         return None
-#     return html
-#data = urllib.parse.urlencode(values).encode('utf-8')
-
 import requests
 import random
 import time
@@ -67,24 +46,31 @@ def getNextTimeStamp(html, timePattern):
 
 def getImgUrlsFromBlog(username, blog, headers):
     imgUrls = []
-    blogUrl = 'http://%s.lofer.com/post/%s' % (username, blog)
-    print('Blog\t' + blogUrl)
-        
+    blogUrl = 'http://%s.lofter.com/post/%s' % (username, blog)
     blogHtml = requests.get(blogUrl, headers = headers).text
     imgUrls.extend(re.findall(r'bigimgsrc="(.*?)"', blogHtml))
-    for url in imgUrls:
-        print('\t' + url)
+    print('Blog\t%s\twith %d\tpictures' % (blogUrl, len(imgUrls)))
     return imgUrls
 
 def downloadImg(imgUrl, path):
-    try:
-        imgRequest = requests.get(imgUrl)
-        if imgRequest.status_code == 200:
-            open(path, 'wb').write(imgRequest.content)
-    except Exception as e:
-        print('download %s fail\n%s' % (imgUrl, e))
-    finally:
-        pass
+    # headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'}
+    for i in range(1,2):
+        try:
+            imgRequest = requests.get(imgUrl, timeout=10)
+            if imgRequest.status_code == 200:
+                open(path, 'wb').write(imgRequest.content)
+                break
+        except requests.exceptions.ConnectionError as e:
+            print('\tGet ' + imgUrl + ' error: Connection aborted')
+            if i == 1:
+                imgUrl = re.sub('^http://img.*?\.','http://img.',imgUrl)
+                print('\tRetry ' + imgUrl)
+            else:
+                print('\tRetry fail')
+        except Exception as e:
+            print(e)
+        finally:
+            pass
 
 def createQueryData(blogID, timeStamp, queryNumber):
     data = {'callCount':'1',
@@ -100,30 +86,16 @@ def createQueryData(blogID, timeStamp, queryNumber):
     'batchId':'123456'}
     return data
 
-# def getBlogNum(html, queryNumber):
-#     # Situations(in case of queryNumber=6)
-#     #   1. normal
-#     #       dwr.engine._remoteHandleCallback('123456','0',[s0,s1,s2,s3,s4,s5]);
-#     #   2. less than queryNumber blogs that have not get
-#     #       dwr.engine._remoteHandleCallback('123456','0',[s0,s1,s2]);
-#     #   3. no more reply
-#     #       dwr.engine._remoteHandleCallback('123456','0',[]);
-#     blogList = re.search(r'\[(.*)\]', html.split()[-1]).group(1)
-#     if not blogList:
-#         return 0
-#     return len(blogList.split(','))
-
 def main():
     # prepare paramters
     username = 'litreily'
-    username = 'travelpick'
     blogID = getUserID(username)
     queryNumber = 20
     timePattern = re.compile('s%s\.time=(.*);s.*type' % (queryNumber-1))
     blogUrlPattern = re.compile(r's[\d]*\.permalink="([\w_]*)"') 
     
     # creat path to save imgs
-    sysType = 'linux'
+    sysType = 'windows'
     rootPath = getRootPath(username, sysType)
 
     # parameters of post packet
@@ -139,6 +111,7 @@ def main():
     numOfBlogs = 0
     numOfImgs = 0
     indexOfImg = 0
+    print('------------------------------- start line ------------------------------')
     while True:
         html = getHtml(url, data, headers).text
         # get urls of blogs: s3.permalink="44fbca_19a6b1b"
@@ -158,14 +131,15 @@ def main():
             for imgUrl in imgUrls:
                 indexOfImg += 1
                 path = '%s/%d.%s' % (rootPath, indexOfImg, re.search(r'(jpg|png|gif)', imgUrl).group(0))
-                print(path)
+                print('{}\t{}'.format(indexOfImg, path))
                 downloadImg(imgUrl, path)
         
         if numOfNewBlogs != queryNumber:
-            print('----------------------------- stop line -----------------------------')
+            print('------------------------------- stop line -------------------------------')
             print('capture complete!')
             print('captured blogs:%d images:%d' % (numOfBlogs, numOfImgs))
             print('download path:' + rootPath)
+            print('-------------------------------------------------------------------------')
             break
 
         data['c0-param1'] = 'number:' + getNextTimeStamp(html, timePattern)
