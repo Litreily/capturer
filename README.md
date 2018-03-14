@@ -22,5 +22,5 @@ A capture tool used to capture pictures from web like Sina, it's powered by pyth
 ### Lofter
 
 - `username`: username of lofter that you want to capture
-- `path`: directory to save the pictures, see the function `getRootPath` in `getImgFromLofter.py`
+- `path`: directory to save the pictures, see the function `get_path` in `lofter_spider.py`
 - `queryNumber`: number of blogs in each query packet, default value is 40
