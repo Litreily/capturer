@@ -9,7 +9,7 @@ A capture tool used to capture pictures from web like Sina, it's powered by pyth
   - install `BeautifulSoup` - `bs4`
   - install `requests`
 - update your [Parameters](#parameters) of each kind of web
-- running `main.py` with Bash on Windows or Linux
+- run `main.py`
 
 ## Parameters
 
@@ -23,4 +23,4 @@ A capture tool used to capture pictures from web like Sina, it's powered by pyth
 
 - `username`: username of lofter that you want to capture
 - `path`: directory to save the pictures, see the function `getRootPath` in `getImgFromLofter.py`
-- `queryNumber`: number of blogs in each query packet, default value is 20
+- `queryNumber`: number of blogs in each query packet, default value is 40

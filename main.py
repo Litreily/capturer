@@ -3,8 +3,8 @@
 # date: 2018.03.06
 # description: capture pictures from webs
 
-import getImgFromSina as sina
-import getImgFromLofter as lofter
+import sina_spider as sina
+import lofter_spider as lofter
 
 if __name__ == '__main__':
     webs = {
