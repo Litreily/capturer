@@ -14,7 +14,7 @@ import time
 import random
 
 
-def get_path(username):
+def _get_path(username):
     path = {
         'Windows': 'D:/litreily/Pictures/python/lofter/' + username,
         'Linux': '/mnt/d/litreily/Pictures/python/lofter/' + username
@@ -36,15 +36,15 @@ def _get_html(url, data, headers):
     return html
 
 
-def _get_uid(username):
+def _get_blogid(username):
     try:
-        html = requests.get('http://' + username + '.lofter.com')
+        html = requests.get('http://%s.lofter.com' % username)
         id_reg = r'src="http://www.lofter.com/control\?blogId=(.*)"'
         blogid = re.search(id_reg, html.text).group(1)
         print('The blogid of %s is: %s' % (username, blogid))
         return blogid
     except Exception as e:
-        print('get blogid from http://' +username + '.lofter.com failed\n')
+        print('get blogid from http://%s.lofter.com failed' % username)
         print('please check your username.')
         exit(1)
 
@@ -74,7 +74,7 @@ def _capture_images(imgurl, path):
                 open(path, 'wb').write(image_request.content)
                 break
         except requests.exceptions.ConnectionError as e:
-            print('\tGet ' + imgurl + ' fail\n\terror:' + str(e))
+            print('\tGet %s failed\n\terror:%s' % (imgurl, e))
             if i == 1:
                 imgurl = re.sub('^http://img.*?\.','http://img.',imgurl)
                 print('\tRetry ' + imgurl)
@@ -103,22 +103,22 @@ def _create_query_data(blogid, timestamp, query_number):
 
 def main():
     # prepare paramters
-    username = 'litreily'
-    blogid = _get_uid(username)
+    username = 'unicornwj'
+    blogid = _get_blogid(username)
     query_number = 40
     time_pattern = re.compile('s%d\.time=(.*);s.*type' % (query_number-1))
     blog_url_pattern = re.compile(r's[\d]*\.permalink="([\w_]*)"') 
     
     # creat path to save imgs
-    path = get_path(username)
+    path = _get_path(username)
 
     # parameters of post packet
-    url = 'http://'+ username + '.lofter.com/dwr/call/plaincall/ArchiveBean.getArchivePostByTime.dwr'
+    url = 'http://%s.lofter.com/dwr/call/plaincall/ArchiveBean.getArchivePostByTime.dwr' % username
     data = _create_query_data(blogid, _get_timestamp(None, time_pattern), str(query_number))
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.146 Safari/537.36',
         'Host': username + '.lofter.com',
-        'Referer': 'http://' + username + '.lofter.com/view',
+        'Referer': 'http://%s.lofter.com/view' % username,
         'Accept-Encoding': 'gzip, deflate'
     }
 

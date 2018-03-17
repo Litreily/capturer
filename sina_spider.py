@@ -14,7 +14,7 @@ import urllib.request
 from bs4 import BeautifulSoup
 
 
-def get_path(uid):
+def _get_path(uid):
     path = {
         'Windows': 'D:/litreily/Pictures/python/sina/' + uid,
         'Linux': '/mnt/d/litreily/Pictures/python/sina/' + uid
@@ -64,13 +64,13 @@ def _capture_images(uid, headers, path):
         imgurls = []        
         for blog in blogs:
             blog = str(blog)
-            imgListUrl = imglist_pattern.findall(blog)
-            if not imgListUrl:
+            imglist_url = imglist_pattern.findall(blog)
+            if not imglist_url:
                 # 2.1 get img-url from blog that have only one pic
                 imgurls += img_pattern.findall(blog)
             else:
                 # 2.2 get img-urls from blog that have group pics
-                html = _get_html(imgListUrl[0], headers)
+                html = _get_html(imglist_url[0], headers)
                 imgurls += img_pattern.findall(html)
 
         if not imgurls:
@@ -98,7 +98,7 @@ def _capture_images(uid, headers, path):
 def main():
     # uids = ['2657006573','2173752092','3261134763','2174219060']
     uid = '2174219060'
-    path = get_path(uid)
+    path = _get_path(uid)
 
     # cookie is form the above url->network->request headers
     cookies = ''

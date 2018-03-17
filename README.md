@@ -1,6 +1,6 @@
 # What's Capturer
 
-A capture tool used to capture pictures from web like Sina, it's powered by python3.
+A capture tool used to capture pictures from web like Sina.
 
 ## How to use
 
@@ -9,7 +9,7 @@ A capture tool used to capture pictures from web like Sina, it's powered by pyth
   - install `BeautifulSoup` - `bs4`
   - install `requests`
 - update your [Parameters](#parameters) of each kind of web
-- run `main.py`
+- run `main.py` or `***_spider.py`
 
 ## Parameters
 
@@ -22,5 +22,5 @@ A capture tool used to capture pictures from web like Sina, it's powered by pyth
 ### Lofter
 
 - `username`: username of lofter that you want to capture
-- `path`: directory to save the pictures, see the function `get_path` in `lofter_spider.py`
-- `queryNumber`: number of blogs in each query packet, default value is 40
+- `path`: directory to save the pictures, see the function `_get_path` in `lofter_spider.py`
+- `query_number`: number of blogs in each query packet, default value is 40
