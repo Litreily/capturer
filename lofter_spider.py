@@ -103,7 +103,7 @@ def _create_query_data(blogid, timestamp, query_number):
 
 def main():
     # prepare paramters
-    username = 'unicornwj'
+    username = 'litreily'
     blogid = _get_blogid(username)
     query_number = 40
     time_pattern = re.compile('s%d\.time=(.*);s.*type' % (query_number-1))
