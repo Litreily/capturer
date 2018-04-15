@@ -13,12 +13,12 @@ from huaban.items import PinItem
 
 class HuabanPipeline(object):
     def __init__(self):
-        # open file to save BoardItem
+        '''Open file to save the exported BoardItem'''
         self.file = open('D:/litreily/Pictures/python/huaban/boards.json', 'w+b')
         self.item_exporter = JsonItemExporter(self.file, encoding='utf-8', indent=4)
 
     def open_spider(self, spider):
-        # start exporting BoardItem
+        '''Start exporting BoardItem'''
         self.item_exporter.start_exporting()
 
     def process_item(self, item, spider):
