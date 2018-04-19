@@ -28,4 +28,10 @@ class BoardItem(Item):
 
 
 class PinItem(Item):
+    pin_id = Field()
+    board_id = Field()
+    file_id = Field()
+    file_key = Field()
+    source = Field()
+    tags = Field()
     pass

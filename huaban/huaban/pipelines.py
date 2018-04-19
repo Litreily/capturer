@@ -6,6 +6,7 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 from scrapy.exporters import JsonItemExporter
+from scrapy.exporters import JsonLinesItemExporter
 
 from huaban.items import BoardItem
 from huaban.items import PinItem
@@ -13,23 +14,31 @@ from huaban.items import PinItem
 
 class HuabanPipeline(object):
     def __init__(self):
-        '''Open file to save the exported BoardItem'''
-        self.file = open('D:/litreily/Pictures/python/huaban/boards.json', 'w+b')
-        self.item_exporter = JsonItemExporter(self.file, encoding='utf-8', indent=4)
+        '''Open file to save the exported Items'''
+        # save info of BoardItem
+        self.board_info = open('D:/litreily/Pictures/python/huaban/boards.json', 'w+b')
+        self.board_exporter = JsonItemExporter(self.board_info, encoding='utf-8', indent=4)
+
+        # save info of PinItem
+        self.pin_info = open('D:/litreily/Pictures/python/huaban/pins.json', 'w+b')
+        self.pin_exporter = JsonLinesItemExporter(self.pin_info, encoding='utf-8', indent=4)
 
     def open_spider(self, spider):
         '''Start exporting BoardItem'''
-        self.item_exporter.start_exporting()
+        self.board_exporter.start_exporting()
+        self.pin_exporter.start_exporting()
 
     def process_item(self, item, spider):
         if isinstance(item, BoardItem):
-            self.item_exporter.export_item(item)
+            self.board_exporter.export_item(item)
         elif isinstance(item, PinItem):
-            pass
+            self.pin_exporter.export_item(item)
 
         return item
 
     def close_spider(self, spider):
         '''finish exporting and close files'''
-        self.item_exporter.finish_exporting()
-        self.file.close()
+        self.board_exporter.finish_exporting()
+        self.pin_exporter.finish_exporting()
+        self.board_info.close()
+        self.pin_info.close()

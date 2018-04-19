@@ -8,12 +8,14 @@ import re
 import json
 
 from huaban.items import BoardItem
+from huaban.items import PinItem
 
 
 class UserboardsspiderSpider(Spider):
     name = 'UserBoardSpider'
     # user_name = 'meirijingxuan'
-    user_name = 'dsk1985'
+    # user_name = 'dsk1985'
+    user_name = 'litreily'
     host_name = 'http://huaban.com'
 
     allowed_domains = ['huaban.com']
@@ -47,7 +49,7 @@ class UserboardsspiderSpider(Spider):
             board_url = '{0}/boards/{1}'.format(self.host_name, board['board_id'])
             yield Request(board_url, callback=self.parse_pins)
         
-        # Get more boards info with Scrapy.http.Request
+        # Get more boards info
         # Request parameters:
         #   max: the last board_id get from boards
         #   limit: default 10, it's the limit number of boards, can be modified
@@ -56,5 +58,28 @@ class UserboardsspiderSpider(Spider):
         yield Request(board_req, callback=self.parse)
 
     def parse_pins(self, response):
-        # print(response.xpath('body/script[1]').extract_first())
+        board_data = json.loads(response.text, encoding='utf-8')
+        pins = board_data['board'].get('pins')
+
+        if not pins:
+            return
+
+        for pin in pins:
+            item = PinItem()
+            item['pin_id'] = pin['pin_id']
+            item['board_id'] = pin['board_id']
+            item['file_id'] = pin['file_id']
+            item['file_key'] = pin['file']['key']
+            item['source'] = pin['source']
+            item['tags'] = pin['tags']
+            yield item
+        
+        # Get more pins info
+        # Request parameters:
+        #   max: the last pin_id get from pins
+        #   limit: default 20, it's the limit number of pins, can be modified
+        pin_req = '{0}/boards/{1}/?jg6nr2rm&max={2}&limit={3}&wfl=1'.format(
+            self.host_name, pins[-1]['board_id'], pins[-1]['pin_id'], 20)
+        yield Request(pin_req, callback=self.parse_pins)
+
         pass
