@@ -1,6 +1,6 @@
 # What's Capturer
 
-A capture tool used to capture pictures from web like Sina.
+A capture tool used to capture pictures from web like Sina, L
 
 ## How to use
 
