@@ -1,5 +1,6 @@
 *.swp
 *.html
 *.old
+*.log
 download/
 __pycache__/
