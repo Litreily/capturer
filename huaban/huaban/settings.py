@@ -14,6 +14,11 @@ BOT_NAME = 'huaban'
 SPIDER_MODULES = ['huaban.spiders']
 NEWSPIDER_MODULE = 'huaban.spiders'
 
+# Custom settings
+USERNAME = 'litreily'
+ROOT_DIR = 'D:/litreily/Pictures/python/huaban/'
+USER_DIR = ROOT_DIR + USERNAME
+USER_DATA_DIR = USER_DIR + '/json/'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
@@ -75,7 +80,9 @@ DOWNLOADER_MIDDLEWARES = {
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'huaban.pipelines.HuabanPipeline': 300,
+    'huaban.pipelines.HuabanImagesPipeline': 400,
 }
+IMAGES_STORE = USER_DIR
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html

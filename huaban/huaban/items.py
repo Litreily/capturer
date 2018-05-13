@@ -30,6 +30,7 @@ class BoardItem(Item):
 class PinItem(Item):
     pin_id = Field()
     board_id = Field()
+    board_title = Field()
     file_id = Field()
     file_key = Field()
     source = Field()

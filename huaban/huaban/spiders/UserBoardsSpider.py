@@ -47,7 +47,7 @@ class UserboardsspiderSpider(Spider):
             yield item
 
             board_url = '{0}/boards/{1}'.format(self.host_name, board['board_id'])
-            yield Request(board_url, callback=self.parse_pins)
+            yield Request(board_url, meta={'board_title': board['title']}, callback=self.parse_pins)
         
         # Get more boards info
         # Request parameters:
@@ -60,6 +60,7 @@ class UserboardsspiderSpider(Spider):
     def parse_pins(self, response):
         board_data = json.loads(response.text, encoding='utf-8')
         pins = board_data['board'].get('pins')
+        board_title = response.meta['board_title']
 
         if not pins:
             return
@@ -68,6 +69,7 @@ class UserboardsspiderSpider(Spider):
             item = PinItem()
             item['pin_id'] = pin['pin_id']
             item['board_id'] = pin['board_id']
+            item['board_title'] = board_title
             item['file_id'] = pin['file_id']
             item['file_key'] = pin['file']['key']
             item['source'] = pin['source']
@@ -80,6 +82,4 @@ class UserboardsspiderSpider(Spider):
         #   limit: default 20, it's the limit number of pins, can be modified
         pin_req = '{0}/boards/{1}/?jg6nr2rm&max={2}&limit={3}&wfl=1'.format(
             self.host_name, pins[-1]['board_id'], pins[-1]['pin_id'], 20)
-        yield Request(pin_req, callback=self.parse_pins)
-
-        pass
+        yield Request(pin_req, meta={'board_title': board_title}, callback=self.parse_pins)
