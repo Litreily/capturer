@@ -7,8 +7,10 @@
 
 from scrapy.exporters import JsonItemExporter
 from scrapy.exporters import JsonLinesItemExporter
+
 from scrapy.pipelines.images import ImagesPipeline
 from scrapy.http import Request
+from scrapy.exceptions import DropItem
 
 from huaban.items import BoardItem
 from huaban.items import PinItem
@@ -60,7 +62,7 @@ class HuabanPipeline(object):
 
 
 class HuabanImagesPipeline(ImagesPipeline):
-    '''implement image downloader by inherit class ImagesPipeline'''
+    '''Implement image downloader by inherit class ImagesPipeline'''
     def get_media_requests(self, item, info):
         if isinstance(item, PinItem):
             image_url = 'http://img.hb.aicdn.com/' + item['file_key']

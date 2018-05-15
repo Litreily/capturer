@@ -15,6 +15,8 @@ SPIDER_MODULES = ['huaban.spiders']
 NEWSPIDER_MODULE = 'huaban.spiders'
 
 # Custom settings
+# USERNAME = 'meirijingxuan'
+# USERNAME = 'dsk1985'
 USERNAME = 'litreily'
 ROOT_DIR = 'D:/litreily/Pictures/python/huaban/'
 USER_DIR = ROOT_DIR + USERNAME

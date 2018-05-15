@@ -2,6 +2,7 @@
 from scrapy import Spider
 from scrapy.http import Request
 from scrapy.http import Headers
+from scrapy.utils.project import get_project_settings
 
 import re
 
@@ -13,13 +14,13 @@ from huaban.items import PinItem
 
 class UserboardsspiderSpider(Spider):
     name = 'UserBoardSpider'
-    # user_name = 'meirijingxuan'
-    # user_name = 'dsk1985'
-    user_name = 'litreily'
-    host_name = 'http://huaban.com'
-
     allowed_domains = ['huaban.com']
-    start_urls = ['{0}/{1}/'.format(host_name, user_name)]
+
+    def __init__(self):
+        settings = get_project_settings()
+        self.username = settings.get('USERNAME')
+        self.hostname = 'http://huaban.com'
+        self.start_urls = ['{0}/{1}/'.format(self.hostname, self.username)]
 
     def parse(self, response):
         '''Get boards info from home page of user'''
@@ -46,15 +47,15 @@ class UserboardsspiderSpider(Spider):
             item['like_count'] = board['like_count']
             yield item
 
-            board_url = '{0}/boards/{1}'.format(self.host_name, board['board_id'])
+            board_url = '{0}/boards/{1}'.format(self.hostname, board['board_id'])
             yield Request(board_url, meta={'board_title': board['title']}, callback=self.parse_pins)
         
         # Get more boards info
         # Request parameters:
         #   max: the last board_id get from boards
         #   limit: default 10, it's the limit number of boards, can be modified
-        board_req = '{0}/{1}/?jg0gcj0&max={2}&limit={3}&wfl=1'.format(self.host_name, 
-        self.user_name, boards[-1]['board_id'], 10)
+        board_req = '{0}/{1}/?jg0gcj0&max={2}&limit={3}&wfl=1'.format(self.hostname, 
+        self.username, boards[-1]['board_id'], 10)
         yield Request(board_req, callback=self.parse)
 
     def parse_pins(self, response):
@@ -81,5 +82,5 @@ class UserboardsspiderSpider(Spider):
         #   max: the last pin_id get from pins
         #   limit: default 20, it's the limit number of pins, can be modified
         pin_req = '{0}/boards/{1}/?jg6nr2rm&max={2}&limit={3}&wfl=1'.format(
-            self.host_name, pins[-1]['board_id'], pins[-1]['pin_id'], 20)
+            self.hostname, pins[-1]['board_id'], pins[-1]['pin_id'], 20)
         yield Request(pin_req, meta={'board_title': board_title}, callback=self.parse_pins)
