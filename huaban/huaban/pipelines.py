@@ -76,7 +76,8 @@ class HuabanImagesPipeline(ImagesPipeline):
         item = request.meta['item']
         board_title = item['board_title']
         # file path: IMAGE_STORE/images/[BOARD_TITLE]/[URL_PATH].jpg
-        return join('images', board_title, basename(url_path) + '.jpg')
+        return join('images', board_title.replace(':', '-'), 
+        basename(url_path) + '.jpg')
 
     def item_completed(self, results, item, info):
         image_paths = [x['path'] for ok, x in results if ok]
