@@ -22,6 +22,18 @@ ROOT_DIR = 'D:/litreily/Pictures/python/huaban/'
 USER_DIR = ROOT_DIR + USERNAME
 USER_DATA_DIR = USER_DIR + '/json/'
 
+# Log
+LOG_DIR = ROOT_DIR + '.log'
+LOG_ENCODING = 'utf-8'
+
+import os
+if not os.path.isdir(LOG_DIR):
+    os.mkdir(LOG_DIR)
+
+import time
+localtime = time.strftime('%Y%m%d_%H%M%S', time.localtime())
+LOG_FILE = '{0}/{1}_{2}.log'.format(LOG_DIR, USERNAME, localtime)
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = ('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
 ' (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36')
