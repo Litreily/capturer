@@ -20,6 +20,12 @@ from os.path import join, basename
 
 from urllib.parse import urlparse
 
+from PIL import Image
+
+try:
+    from cStringIO import StringIO as BytesIO
+except ImportError:
+    from io import BytesIO
 
 class HuabanPipeline(object):
     def __init__(self, user_data_dir):
@@ -76,8 +82,32 @@ class HuabanImagesPipeline(ImagesPipeline):
         item = request.meta['item']
         board_title = item['board_title']
         # file path: IMAGE_STORE/images/[BOARD_TITLE]/[URL_PATH].jpg
-        return join('images', board_title.replace(':', '-'), 
-        basename(url_path) + '.jpg')
+        return join('images', board_title.replace(':', '-'), basename(url_path))
+
+    def check_gif(self, image):
+        if image.format == 'GIF':
+            return True
+        else:
+            return image.info.get('version') in ['GIF89a', 'GIF87a']
+
+    def get_images(self, response, request, info):
+        path = self.file_path(request, response=response, info=info)
+        orig_image = Image.open(BytesIO(response.body))
+
+        if self.check_gif(orig_image):
+            path += '.gif'
+            abs_path = self.store._get_filesystem_path(path)
+            self.store._mkdir(os.path.dirname(abs_path), info)
+
+            # save gif image from reponse
+            with open(abs_path, 'wb') as f:
+                f.write(response.body)
+            return None
+        else:
+            path += '.jpg'
+            image, buf = self.convert_image(orig_image)
+
+        yield path, image, buf
 
     def item_completed(self, results, item, info):
         image_paths = [x['path'] for ok, x in results if ok]
