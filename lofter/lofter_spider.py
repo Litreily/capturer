@@ -6,7 +6,6 @@
 
 import re
 import os
-import platform
 
 import requests
 
@@ -14,12 +13,9 @@ import time
 import random
 
 
-def _get_path(username):
-    path = {
-        'Windows': 'D:/litreily/Pictures/python/lofter/' + username,
-        'Linux': '/mnt/d/litreily/Pictures/python/lofter/' + username
-    }.get(platform.system())
-
+def _get_path(uid):
+    home_path = os.path.expanduser('~')
+    path = os.path.join(home_path, 'Pictures/python/lofter', uid)
     if not os.path.isdir(path):
         os.makedirs(path)
     return path
