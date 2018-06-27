@@ -1,0 +1,9 @@
+#!/bin/bash
+# author: 5km(smslit)
+# date: 2018.06.27
+# description: 
+#    a shell script to run main.py
+#    this scrip can solve the problem 
+#    that python3 may be installed in different path
+
+python3 ./main.py

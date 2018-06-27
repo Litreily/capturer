@@ -6,7 +6,6 @@
 
 import re
 import os
-import platform
 
 import urllib
 import urllib.request
@@ -15,11 +14,8 @@ from bs4 import BeautifulSoup
 
 
 def _get_path(uid):
-    path = {
-        'Windows': 'D:/litreily/Pictures/python/sina/' + uid,
-        'Linux': '/mnt/d/litreily/Pictures/python/sina/' + uid
-    }.get(platform.system())
-
+    home_path = os.path.expanduser('~')
+    path = os.path.join(home_path, 'Pictures/python/sina', uid)
     if not os.path.isdir(path):
         os.makedirs(path)
     return path
@@ -54,6 +50,9 @@ def _capture_images(uid, headers, path):
 
         # 1. get html of each page url
         html = _get_html(url, headers)
+        if html == None:
+            print('\nPlease check your cookies in sina/sina_spider.py!\n')
+            break
         
         # 2. parse the html and find all the imgList Url of each page
         soup = BeautifulSoup(html, "html.parser")
