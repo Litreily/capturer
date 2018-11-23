@@ -89,10 +89,11 @@ def _create_query_data(blogid, timestamp, query_number):
     'c0-scriptName':'ArchiveBean',
     'c0-methodName':'getArchivePostByTime',
     'c0-id':'0',
-    'c0-param0':'number:' + blogid,
-    'c0-param1':'number:' + timestamp,
-    'c0-param2':'number:' + query_number,
-    'c0-param3':'boolean:false',
+    'c0-param0':'boolean:false',
+    'c0-param1':'number:' + blogid,
+    'c0-param2':'number:' + timestamp,
+    'c0-param3':'number:' + query_number,
+    'c0-param4':'boolean:false',
     'batchId':'123456'}
     return data
 
