@@ -153,8 +153,8 @@ def main():
             print('-------------------------------------------------------------------------')
             break
 
-        data['c0-param1'] = 'number:' + _get_timestamp(html, time_pattern)
-        print('The next TimeStamp is : %s\n' % data['c0-param1'].split(':')[1])
+        data['c0-param2'] = 'number:' + _get_timestamp(html, time_pattern)
+        print('The next TimeStamp is : %s\n' % data['c0-param2'].split(':')[1])
         # wait a few second
         time.sleep(random.randint(5,10))
 
