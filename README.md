@@ -2,18 +2,15 @@
 
 A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
 
-## Dependent libs
-
-- `BeautifulSoup` - `bs4`
-- `requests`
-- `scrapy`
-- `pillow`
-
 ## How to use
 
 - install `python3` and libs
 - update your [Parameters](#parameters) of each kind of web
-- run `./capturer` or run `main.py` or `***_spider.py` to capture images from `sina` , `lofter` or `toutiao`
+- run `./capturer` or run `main.py` or `***_spider.py` to capture images from 
+  - `sina`
+  - `lofter`
+  - `toutiao`
+  - `qqzone`
 - run `huaban/run.py` to capture images from `huaban`
 
 ## Parameters
@@ -38,3 +35,7 @@ A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
 ### Toutiao
 
 Need no configuration! Run script and you will know!
+
+### QQZone
+
+Need no configuration!
