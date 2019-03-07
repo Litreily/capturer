@@ -43,7 +43,7 @@ def _capture_images(uid, headers, path):
     imglist_pattern = re.compile(imglist_reg)
     img_reg = r'src="(http://w.{2}\.sinaimg.cn/(.{6,8})/.{32,33}.(jpg|gif))"'
     img_pattern = re.compile(img_reg)
-    
+
     print('start capture picture of uid:' + uid)
     while True:
         url = 'https://weibo.cn/%s/profile?filter=%s&page=%d' % (uid, filter_mode, num_pages)
@@ -53,14 +53,14 @@ def _capture_images(uid, headers, path):
         if html == None:
             print('\nPlease check your cookies in sina/sina_spider.py!\n')
             break
-        
+
         # 2. parse the html and find all the imgList Url of each page
-        soup = BeautifulSoup(html, "html.parser")
+        soup = BeautifulSoup(html, "lxml")
         # <div class="c" id="M_G4gb5pY8t"><div>
         blogs = soup.body.find_all(attrs={'id':re.compile(r'^M_')}, recursive=False)
         num_blogs += len(blogs)
 
-        imgurls = []        
+        imgurls = []
         for blog in blogs:
             blog = str(blog)
             imglist_url = imglist_pattern.findall(blog)
@@ -95,8 +95,8 @@ def _capture_images(uid, headers, path):
 
 
 def main():
-    # uids = ['2657006573','2173752092','3261134763','2174219060']
-    uid = '2174219060'
+    uids = ['3261134763','2173752092']
+    uid = uids[0]
     path = _get_path(uid)
 
     # cookie is form the above url->network->request headers
