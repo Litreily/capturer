@@ -7,7 +7,7 @@
 import re
 import os
 
-import urllib
+import socket
 import urllib.request
 
 from bs4 import BeautifulSoup
@@ -83,13 +83,22 @@ def _capture_images(uid, headers, path):
         for img in imgurls:
             imgurl = img[0].replace(img[1], 'large')
             num_imgs += 1
+            count = 1
             try:
                 urllib.request.urlretrieve(imgurl, '{}/{}.{}'.format(path, num_imgs, img[2]))
+            except socket.timeout:
+                while count <= 3:
+                    try:
+                        urllib.request.urlretrieve(imgurl, '{}/{}.{}'.format(path, num_imgs, img[2]))
+                        break
+                    except socket.timeout:
+                        count += 1
+            finally:
                 # display the raw url of images
                 print('\t%d\t%s' % (num_imgs, imgurl))
-            except Exception as e:
-                print(str(e))
-                print('\t%d\t%s failed' % (num_imgs, imgurl))
+                if count > 3:
+                    print('\t%d\t%s failed' % (num_imgs, imgurl))
+                pass
         num_pages += 1
         print('')
 
@@ -98,6 +107,7 @@ def main():
     uids = ['3261134763','2173752092']
     uid = uids[0]
     path = _get_path(uid)
+    socket.setdefaulttimeout(20)
 
     # cookie is form the above url->network->request headers
     cookies = ''
