@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # author: litreily
 # date: 2018.03.06
 # description: capture pictures from webs

@@ -179,7 +179,7 @@ def get_user():
     }
 
 
-def main();
+def main():
     FORMAT = '%(asctime)s [%(levelname)s] %(message)s'
     logging.basicConfig(format=FORMAT, level=logging.INFO)
 
