@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 """一个用于下载QQ空间相册内所有照片的爬虫"""
 
@@ -179,7 +179,7 @@ def get_user():
     }
 
 
-if __name__ == "__main__":
+def main();
     FORMAT = '%(asctime)s [%(levelname)s] %(message)s'
     logging.basicConfig(format=FORMAT, level=logging.INFO)
 
@@ -195,3 +195,8 @@ if __name__ == "__main__":
 
     qz = qqzone(user)
     qz.start()
+
+
+if __name__ == '__main__':
+    main()
+

@@ -16,7 +16,7 @@ if __name__ == '__main__':
         '4': qqzone
     }
 
-    tips = '''please select web you want to caputer(1-3, default=1)
+    tips = '''please select web you want to caputer(1-4, default=1)
     1 - sina
     2 - lofter
     3 - toutiao
