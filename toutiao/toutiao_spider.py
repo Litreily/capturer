@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/usr/bin/env python3
 """
 Description: Get pisture collections from www.toutiao.com
 Tip:  This script comes from https://github.com/smslit/spider-collection/tree/master/ttpic

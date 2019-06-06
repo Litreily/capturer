@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 # author: litreily
 # date: 2018.03.06
 # description: capture pictures from webs
@@ -16,7 +16,7 @@ if __name__ == '__main__':
         '4': qqzone
     }
 
-    tips = '''please select web you want to caputer(1-3, default=1)
+    tips = '''please select web you want to caputer(1-4, default=1)
     1 - sina
     2 - lofter
     3 - toutiao
