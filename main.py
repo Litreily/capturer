@@ -3,27 +3,24 @@
 # date: 2018.03.06
 # description: capture pictures from webs
 
-import sina.sina_spider as sina
-import lofter.lofter_spider as lofter
-import toutiao.toutiao_spider as toutiao
-import qqzone.qqzone_spider as qqzone
+from importlib import import_module
 
 if __name__ == '__main__':
     webs = {
-        '1': sina,
-        '2': lofter,
-        '3': toutiao,
-        '4': qqzone
+        '1': "sina",
+        '2': "lofter",
+        '3': "toutiao",
+        '4': "qqzone"
     }
 
-    tips = '''please select web you want to caputer(1-4, default=1)
-    1 - sina
-    2 - lofter
-    3 - toutiao
-    4 - qqzone
-You want to captuer from:'''
+    tips = 'please select web you want to caputer(1-{0}, default=1)\n'.format(len(webs)) + \
+           ''.join([ "\t{0} - {1}\n".format(i, webs.get(i)) for i in webs ]) + \
+           'You want to captuer from: '
 
     select = input(tips)
     if select not in webs:
         select = '1'
-    webs.get(select).main()
+
+    module = "{0}.{0}_spider".format(webs.get(select))
+    spider = import_module(module)
+    spider.main()
