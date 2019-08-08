@@ -15,3 +15,8 @@ class VmgirlsItem(Item):
     url = Field()
     title = Field()
     pass
+
+class VmgirlsImagesItem(Item):
+    image_urls = Field()
+    title = Field()
+    pass

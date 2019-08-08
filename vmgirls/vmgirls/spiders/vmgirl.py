@@ -2,6 +2,7 @@
 import scrapy
 
 from vmgirls.items import VmgirlsItem
+from vmgirls.items import VmgirlsImagesItem
 
 from scrapy.http import Request
 from scrapy.utils.project import get_project_settings
@@ -20,10 +21,9 @@ class VmgirlSpider(scrapy.Spider):
     def parse(self, response):
         '''Parse sitemap'''
         urls = response.xpath('//*[@id="content"][1]/ul/li')
-        # url example:
-        # <a href="https://www.vmgirls.com/9.html" title="小王子的爱情启示录" target="_blank">小王子的爱情启示录</a>
         for url in urls:
             item = VmgirlsItem()
+
             item['url'] = url.xpath('a/@href').extract_first()
             item['title'] = url.xpath('a/text()').extract_first()
             yield item
@@ -32,9 +32,12 @@ class VmgirlSpider(scrapy.Spider):
             if not os.path.isdir(save_path):
                 os.makedirs(save_path)
 
-            yield Request(item['url'], meta={'path': save_path}, callback=self.parse_page)
+            yield Request(item['url'], meta={'title': item['title']}, callback=self.parse_page)
 
     def parse_page(self, response):
         '''Parse each page of girls'''
-        save_path = response.meta['path']
-        pass
+        urls = response.xpath('//*[@class="post-content"]//img/@data-src').extract()
+        item = VmgirlsImagesItem()
+        item['image_urls'] = urls
+        item['title'] = response.meta['title']
+        yield item

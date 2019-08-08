@@ -6,12 +6,18 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 from scrapy.exporters import JsonLinesItemExporter
+from scrapy.pipelines.images import ImagesPipeline
+from scrapy.exceptions import DropItem
+from scrapy.http import Request
 
 from vmgirls.items import VmgirlsItem
+from vmgirls.items import VmgirlsImagesItem
 
 import os
+from urllib.parse import urlparse
 
 class VmgirlsPipeline(object):
+    '''Pipeline for every url of one theme, save theme info to json file'''
     def __init__(self, user_data_dir):
         '''Open file to save the exported Items'''
         self.user_data_dir = user_data_dir
@@ -41,3 +47,26 @@ class VmgirlsPipeline(object):
         self.girls_exporter.finish_exporting()
         self.girls_info.close()
 
+class VmgirlsImagesPipeline(ImagesPipeline):
+    '''Get images from one theme'''
+    def get_media_requests(self, item, info):
+        if isinstance(item, VmgirlsImagesItem):
+            for image_url in item['image_urls']:
+                yield Request(image_url, meta={'item': item})
+
+    def file_path(self, request, response=None, info=None):
+        url_path = urlparse(request.url).path
+        item = request.meta['item']
+        filename = os.path.join(item['title'], basename(url_path))
+        print('----------------------------')
+        print(filename)
+        print('----------------------------')
+        return filename 
+
+    def item_completed(self, results, item, info):
+        if isinstance(item, VmgirlsImagesItem):
+            image_paths = [x['path'] for ok, x in results if ok]
+
+            if not image_paths:
+                raise DropItem("Item contains no images")
+            return item

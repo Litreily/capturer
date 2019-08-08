@@ -17,12 +17,13 @@ NEWSPIDER_MODULE = 'vmgirls.spiders'
 import os
 USER_DIR = os.path.expanduser('~')
 USER_DATA_DIR = os.path.join(USER_DIR, 'Pictures/python/vmgirls')
+IMAGES_STORE = USER_DATA_DIR
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'vmgirls (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -69,6 +70,7 @@ ROBOTSTXT_OBEY = True
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'vmgirls.pipelines.VmgirlsPipeline': 300,
+    'vmgirls.pipelines.VmgirlsImagesPipeline': 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
