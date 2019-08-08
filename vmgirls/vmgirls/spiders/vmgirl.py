@@ -13,7 +13,7 @@ class VmgirlSpider(scrapy.Spider):
     name = 'vmgirl'
     allowed_domains = ['vmgirls.com']
     start_urls = ['https://www.vmgirls.com/sitemap.shtml/']
-    
+
     def __init__(self):
         settings = get_project_settings()
         self.user_data_dir = settings.get('USER_DATA_DIR')
@@ -32,7 +32,8 @@ class VmgirlSpider(scrapy.Spider):
             if not os.path.isdir(save_path):
                 os.makedirs(save_path)
 
-            yield Request(item['url'], meta={'title': item['title']}, callback=self.parse_page)
+            yield Request(item['url'], meta={'title': item['title']},
+                          callback=self.parse_page)
 
     def parse_page(self, response):
         '''Parse each page of girls'''

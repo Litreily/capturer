@@ -14,7 +14,7 @@ from vmgirls.items import VmgirlsItem
 from vmgirls.items import VmgirlsImagesItem
 
 import os
-from urllib.parse import urlparse
+
 
 class VmgirlsPipeline(object):
     '''Pipeline for every url of one theme, save theme info to json file'''
@@ -47,6 +47,7 @@ class VmgirlsPipeline(object):
         self.girls_exporter.finish_exporting()
         self.girls_info.close()
 
+
 class VmgirlsImagesPipeline(ImagesPipeline):
     '''Get images from one theme'''
     def get_media_requests(self, item, info):
@@ -55,13 +56,10 @@ class VmgirlsImagesPipeline(ImagesPipeline):
                 yield Request(image_url, meta={'item': item})
 
     def file_path(self, request, response=None, info=None):
-        url_path = urlparse(request.url).path
+        url = request.url
         item = request.meta['item']
-        filename = os.path.join(item['title'], basename(url_path))
-        print('----------------------------')
-        print(filename)
-        print('----------------------------')
-        return filename 
+        path = os.path.join(item['title'], url.split('/')[-1])
+        return path
 
     def item_completed(self, results, item, info):
         if isinstance(item, VmgirlsImagesItem):
