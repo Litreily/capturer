@@ -12,8 +12,8 @@ from scrapy.item import Field
 class VmgirlsItem(Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    url = Field()
-    title = Field()
+    theme_urls = Field()
+    theme_titles = Field()
     pass
 
 class VmgirlsImagesItem(Item):

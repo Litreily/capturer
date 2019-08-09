@@ -20,20 +20,20 @@ class VmgirlSpider(scrapy.Spider):
 
     def parse(self, response):
         '''Parse sitemap'''
-        urls = response.xpath('//*[@id="content"][1]/ul/li')
-        for url in urls:
-            item = VmgirlsItem()
+        urls = response.xpath('//*[@id="content"][1]/ul/li/a/@href').extract()
+        titles = response.xpath('//*[@id="content"][1]/ul/li/a/text()').extract()
 
-            item['url'] = url.xpath('a/@href').extract_first()
-            item['title'] = url.xpath('a/text()').extract_first()
-            yield item
+        item = VmgirlsItem()
+        item['theme_urls'] = urls
+        item['theme_titles'] = titles
+        yield item
 
-            save_path = os.path.join(self.user_data_dir, item['title'])
+        for url, title in zip(urls, titles):
+            save_path = os.path.join(self.user_data_dir, title)
             if not os.path.isdir(save_path):
                 os.makedirs(save_path)
 
-            yield Request(item['url'], meta={'title': item['title']},
-                          callback=self.parse_page)
+            yield Request(url, meta={'title': title}, callback=self.parse_page)
 
     def parse_page(self, response):
         '''Parse each page of girls'''

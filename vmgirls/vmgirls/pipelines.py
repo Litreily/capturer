@@ -25,27 +25,29 @@ class VmgirlsPipeline(object):
         if not os.path.isdir(self.user_data_dir):
             os.makedirs(self.user_data_dir)
 
-        self.girls_info = open(os.path.join(self.user_data_dir, 'vmgirls.json'), 'w+b')
-        self.girls_exporter = JsonLinesItemExporter(self.girls_info, encoding='utf-8', indent=4)
-
     @classmethod
     def from_crawler(cls, crawler):
         '''Get user dir from global settings.py'''
         settings = crawler.settings
         return cls(settings.get('USER_DATA_DIR'))
 
-    def open_spider(self, spider):
-        '''Start exporting VmgirlsItem'''
-        self.girls_exporter.start_exporting()
-
     def process_item(self, item, spider):
+        '''Save item info to loacl file'''
         if isinstance(item, VmgirlsItem):
-            self.girls_exporter.export_item(item)
-        return item
+            self.girls_info = open(
+                os.path.join(self.user_data_dir, 'vmgirls.json'), 'w+b')
+            self.girls_exporter = JsonLinesItemExporter(
+                self.girls_info, encoding='utf-8', indent=4)
 
-    def close_spider(self, spider):
-        self.girls_exporter.finish_exporting()
-        self.girls_info.close()
+            self.girls_exporter.start_exporting()
+
+            for url, title in zip(item['theme_urls'], item['theme_titles']):
+                single_item = {'theme_url':url, 'title':title}
+                self.girls_exporter.export_item(single_item)
+
+            self.girls_exporter.finish_exporting()
+            self.girls_info.close()
+        return item
 
 
 class VmgirlsImagesPipeline(ImagesPipeline):
@@ -56,6 +58,7 @@ class VmgirlsImagesPipeline(ImagesPipeline):
                 yield Request(image_url, meta={'item': item})
 
     def file_path(self, request, response=None, info=None):
+        '''Set image dir to IMAGES_STORE/title/base_url'''
         url = request.url
         item = request.meta['item']
         path = os.path.join(item['title'], url.split('/')[-1])
