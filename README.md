@@ -2,6 +2,15 @@
 
 A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
 
+## Support Websites
+
+- [Sina](https://weibo.com/)
+- [Lofter](http://www.lofter.com/)
+- [Toutiao](https://www.toutiao.com)
+- [QQZone](https://qzone.qq.com/)
+- [Huaban](https://huaban.com/)
+- [Vmgirls](https://www.vmgirls.com/)
+
 ## How to use
 
 - install `python3` and libs
@@ -12,6 +21,11 @@ A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
   - `toutiao`
   - `qqzone`
 - run `huaban/run.py` to capture images from `huaban`
+- run `vmgirls/run.py` to capture images from `vmgirls`
+
+## Notices
+
+Almost all of the file path based on `~/Pictures/python`, `~` means home dir.
 
 ## Parameters
 
@@ -32,10 +46,3 @@ A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
 - `path`: directory to save the pictures, see the function `_get_path` in `lofter_spider.py`
 - `query_number`: number of blogs in each query packet, default value is 40
 
-### Toutiao
-
-Need no configuration! Run script and you will know!
-
-### QQZone
-
-Need no configuration!
