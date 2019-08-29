@@ -46,3 +46,12 @@ Almost all of the file path based on `~/Pictures/python`, `~` means home dir.
 - `path`: directory to save the pictures, see the function `_get_path` in `lofter_spider.py`
 - `query_number`: number of blogs in each query packet, default value is 40
 
+## Blogs
+
+You can find all the relate blogs in https://www.litreily.top/tags/spider/ .
+
+- Lofter - [爬取网易LOFTER图片](https://www.litreily.top/2018/03/17/lofter/)
+- Sina - [爬取新浪微博用户图片](https://www.litreily.top/2018/04/10/sina/)
+- qqzone - [爬取QQ空间相册](https://www.litreily.top/2019/03/03/qqzone/)
+- Vmgirls - [Scrapy爬取vmgirls](https://www.litreily.top/2019/08/09/vmgirls/)
+
