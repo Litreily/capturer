@@ -10,6 +10,7 @@ A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
 - [QQZone](https://qzone.qq.com/)
 - [Huaban](https://huaban.com/)
 - [Vmgirls](https://www.vmgirls.com/)
+- [Fabiaoqing](https://www.fabiaoqing.com/)
 
 ## How to use
 
@@ -22,6 +23,7 @@ A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
   - `qqzone`
 - run `huaban/run.py` to capture images from `huaban`
 - run `vmgirls/run.py` to capture images from `vmgirls`
+- run `fabiaoqing/fabiaoqing_spider.py key1 [key2] [key3] ...`
 
 ## Notices
 
