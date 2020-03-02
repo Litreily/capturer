@@ -6,6 +6,7 @@
 
 import re
 import os
+import sys
 
 import requests
 
@@ -35,7 +36,7 @@ def _get_html(url, data, headers):
 def _get_blogid(username):
     try:
         html = requests.get('http://%s.lofter.com' % username)
-        id_reg = r'src="http://www.lofter.com/control\?blogId=(.*)"'
+        id_reg = r'src="//www.lofter.com/control\?blogId=(.*)"'
         blogid = re.search(id_reg, html.text).group(1)
         print('The blogid of %s is: %s' % (username, blogid))
         return blogid
@@ -72,7 +73,7 @@ def _capture_images(imgurl, path):
         except requests.exceptions.ConnectionError as e:
             print('\tGet %s failed\n\terror:%s' % (imgurl, e))
             if i == 1:
-                imgurl = re.sub('^http://img.*?\.','http://img.',imgurl)
+                imgurl = re.sub(r'^http://img.*?\.','http://img.',imgurl)
                 print('\tRetry ' + imgurl)
             else:
                 print('\tRetry fail')
@@ -98,14 +99,17 @@ def _create_query_data(blogid, timestamp, query_number):
     return data
 
 
-def main():
+def main(argv):
     # prepare paramters
-    username = 'litreily'
+    if len(argv) < 2:
+        print(os.path.basename(argv[0]) + ' username')
+        exit(1)
+    username = argv[1]
     blogid = _get_blogid(username)
     query_number = 40
-    time_pattern = re.compile('s%d\.time=(.*);s.*type' % (query_number-1))
-    blog_url_pattern = re.compile(r's[\d]*\.permalink="([\w_]*)"') 
-    
+    time_pattern = re.compile(r's%d\.time=(.*);s.*type' % (query_number-1))
+    blog_url_pattern = re.compile(r's[\d]*\.permalink="([\w_]*)"')
+
     # creat path to save imgs
     path = _get_path(username)
 
@@ -128,7 +132,7 @@ def main():
         # get urls of blogs: s3.permalink="44fbca_19a6b1b"
         new_blogs = blog_url_pattern.findall(html)
         num_new_blogs = len(new_blogs)
-        num_blogs += num_new_blogs 
+        num_blogs += num_new_blogs
 
         if num_new_blogs != 0:
             print('NewBlogs:%d\tTotalBolgs:%d' % (num_new_blogs, num_blogs))
@@ -144,7 +148,7 @@ def main():
                 paths = '%s/%d.%s' % (path, index_img, re.search(r'(jpg|png|gif)', imgurl).group(0))
                 print('{}\t{}'.format(index_img, paths))
                 _capture_images(imgurl, paths)
-        
+
         if num_new_blogs != query_number:
             print('------------------------------- stop line -------------------------------')
             print('capture complete!')
@@ -160,4 +164,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)
