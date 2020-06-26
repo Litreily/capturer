@@ -52,7 +52,8 @@ def _capture_images(uid, headers, path):
         # 1. get html of each page url
         html = _get_html(url, headers)
         if html == None:
-            print('\nPlease check your cookies in sina/sina_spider.py!\n')
+            print('\nPlease check your user id or cookies in sina_spider.py!\n')
+            os.removedirs(path)
             break
 
         # 2. parse the html and find all the imgList Url of each page
@@ -113,8 +114,7 @@ def _capture_images(uid, headers, path):
 
 
 def main():
-    uids = ['3261134763', '2173752092']
-    uid = uids[0]
+    uid = input('please input user id (e.g. 1969308311) :')
     path = _get_path(uid)
     socket.setdefaulttimeout(20)
 
