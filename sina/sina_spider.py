@@ -62,6 +62,10 @@ def _capture_images(uid, headers, path):
             attrs={'id': re.compile(r'^M_')}, recursive=False)
         num_blogs += len(blogs)
 
+        if num_pages == 1:
+            # get number of pages
+            max_pages = soup.find('input', attrs={'name': 'mp'}).attrs['value']
+
         imgurls = []
         for blog in blogs:
             blog = str(blog)
@@ -74,15 +78,15 @@ def _capture_images(uid, headers, path):
                 html = _get_html(imglist_url[0], headers)
                 imgurls += img_pattern.findall(html)
 
-        if not imgurls:
+        if num_pages > int(max_pages):
             print('capture complete!')
             print('captured pages:%d, blogs:%d, imgs:%d' %
-                  (num_pages, num_blogs, num_imgs))
+                  (num_pages - 1, num_blogs, num_imgs))
             print('directory:' + path)
             break
 
         # 3. download all the imgs from each imgList
-        print('PAGE %d with %d images' % (num_pages, len(imgurls)))
+        print('PAGE {}/{} with {} images'.format(num_pages, max_pages, len(imgurls)))
         for img in imgurls:
             imgurl = img[0].replace(img[1], 'large')
             num_imgs += 1
