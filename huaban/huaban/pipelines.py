@@ -27,6 +27,7 @@ try:
 except ImportError:
     from io import BytesIO
 
+
 class HuabanPipeline(object):
     def __init__(self, user_data_dir):
         '''Open file to save the exported Items'''
@@ -37,12 +38,14 @@ class HuabanPipeline(object):
 
         # save info of BoardItem
         self.board_info = open(self.user_data_dir + 'boards.json', 'w+b')
-        self.board_exporter = JsonItemExporter(self.board_info, encoding='utf-8', indent=4)
+        self.board_exporter = JsonItemExporter(
+            self.board_info, encoding='utf-8', indent=4)
 
         # save info of PinItem
         self.pin_info = open(self.user_data_dir + 'pins.json', 'w+b')
-        self.pin_exporter = JsonLinesItemExporter(self.pin_info, encoding='utf-8', indent=4)
-    
+        self.pin_exporter = JsonLinesItemExporter(
+            self.pin_info, encoding='utf-8', indent=4)
+
     @classmethod
     def from_crawler(cls, crawler):
         '''get some global settings from settings.py'''
@@ -72,6 +75,7 @@ class HuabanPipeline(object):
 
 class HuabanImagesPipeline(ImagesPipeline):
     '''Implement image downloader by inherit class ImagesPipeline'''
+
     def get_media_requests(self, item, info):
         if isinstance(item, PinItem):
             image_url = 'http://img.hb.aicdn.com/' + item['file_key']

@@ -18,6 +18,7 @@ import os
 
 class VmgirlsPipeline(object):
     '''Pipeline for every url of one theme, save theme info to json file'''
+
     def __init__(self, user_data_dir):
         '''Open file to save the exported Items'''
         self.user_data_dir = user_data_dir
@@ -42,7 +43,7 @@ class VmgirlsPipeline(object):
             self.girls_exporter.start_exporting()
 
             for url, title in zip(item['theme_urls'], item['theme_titles']):
-                single_item = {'theme_url':url, 'title':title}
+                single_item = {'theme_url': url, 'title': title}
                 self.girls_exporter.export_item(single_item)
 
             self.girls_exporter.finish_exporting()
@@ -52,6 +53,7 @@ class VmgirlsPipeline(object):
 
 class VmgirlsImagesPipeline(ImagesPipeline):
     '''Get images from one theme'''
+
     def get_media_requests(self, item, info):
         if isinstance(item, VmgirlsImagesItem):
             for image_url in item['image_urls']:

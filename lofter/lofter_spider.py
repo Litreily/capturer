@@ -24,7 +24,7 @@ def _get_path(uid):
 
 def _get_html(url, data, headers):
     try:
-        html = requests.post(url, data, headers = headers)
+        html = requests.post(url, data, headers=headers)
     except Exception as e:
         print("get %s failed\n%s" % (url, str(e)))
         return None
@@ -56,24 +56,25 @@ def _get_timestamp(html, time_pattern):
 
 def _get_imgurls(username, blog, headers):
     blog_url = 'http://%s.lofter.com/post/%s' % (username, blog)
-    blog_html = requests.get(blog_url, headers = headers).text
+    blog_html = requests.get(blog_url, headers=headers).text
     imgurls = re.findall(r'bigimgsrc="(.*?)"', blog_html)
     print('Blog\t%s\twith %d\tpictures' % (blog_url, len(imgurls)))
     return imgurls
 
 
 def _capture_images(imgurl, path):
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.146 Safari/537.36'}
-    for i in range(1,3):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.146 Safari/537.36'}
+    for i in range(1, 3):
         try:
-            image_request = requests.get(imgurl, headers = headers, timeout = 20)
+            image_request = requests.get(imgurl, headers=headers, timeout=20)
             if image_request.status_code == 200:
                 open(path, 'wb').write(image_request.content)
                 break
         except requests.exceptions.ConnectionError as e:
             print('\tGet %s failed\n\terror:%s' % (imgurl, e))
             if i == 1:
-                imgurl = re.sub(r'^http://img.*?\.','http://img.',imgurl)
+                imgurl = re.sub(r'^http://img.*?\.', 'http://img.', imgurl)
                 print('\tRetry ' + imgurl)
             else:
                 print('\tRetry fail')
@@ -84,18 +85,18 @@ def _capture_images(imgurl, path):
 
 
 def _create_query_data(blogid, timestamp, query_number):
-    data = {'callCount':'1',
-    'scriptSessionId':'${scriptSessionId}187',
-    'httpSessionId':'',
-    'c0-scriptName':'ArchiveBean',
-    'c0-methodName':'getArchivePostByTime',
-    'c0-id':'0',
-    'c0-param0':'boolean:false',
-    'c0-param1':'number:' + blogid,
-    'c0-param2':'number:' + timestamp,
-    'c0-param3':'number:' + query_number,
-    'c0-param4':'boolean:false',
-    'batchId':'123456'}
+    data = {'callCount': '1',
+            'scriptSessionId': '${scriptSessionId}187',
+            'httpSessionId': '',
+            'c0-scriptName': 'ArchiveBean',
+            'c0-methodName': 'getArchivePostByTime',
+            'c0-id': '0',
+            'c0-param0': 'boolean:false',
+            'c0-param1': 'number:' + blogid,
+            'c0-param2': 'number:' + timestamp,
+            'c0-param3': 'number:' + query_number,
+            'c0-param4': 'boolean:false',
+            'batchId': '123456'}
     return data
 
 
@@ -115,7 +116,8 @@ def main(argv):
 
     # parameters of post packet
     url = 'http://%s.lofter.com/dwr/call/plaincall/ArchiveBean.getArchivePostByTime.dwr' % username
-    data = _create_query_data(blogid, _get_timestamp(None, time_pattern), str(query_number))
+    data = _create_query_data(blogid, _get_timestamp(
+        None, time_pattern), str(query_number))
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.146 Safari/537.36',
         'Host': username + '.lofter.com',
@@ -145,22 +147,25 @@ def main(argv):
             # download imgs
             for imgurl in imgurls:
                 index_img += 1
-                paths = '%s/%d.%s' % (path, index_img, re.search(r'(jpg|png|gif)', imgurl).group(0))
+                paths = '%s/%d.%s' % (path, index_img,
+                                      re.search(r'(jpg|png|gif)', imgurl).group(0))
                 print('{}\t{}'.format(index_img, paths))
                 _capture_images(imgurl, paths)
 
         if num_new_blogs != query_number:
-            print('------------------------------- stop line -------------------------------')
+            print(
+                '------------------------------- stop line -------------------------------')
             print('capture complete!')
             print('captured blogs:%d images:%d' % (num_blogs, num_imgs))
             print('download path:' + path)
-            print('-------------------------------------------------------------------------')
+            print(
+                '-------------------------------------------------------------------------')
             break
 
         data['c0-param2'] = 'number:' + _get_timestamp(html, time_pattern)
         print('The next TimeStamp is : %s\n' % data['c0-param2'].split(':')[1])
         # wait a few second
-        time.sleep(random.randint(5,10))
+        time.sleep(random.randint(5, 10))
 
 
 if __name__ == '__main__':

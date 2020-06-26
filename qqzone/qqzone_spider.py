@@ -17,10 +17,11 @@ from json import loads
 
 class qqzone(object):
     """QQ空间相册爬虫"""
+
     def __init__(self, user):
         self.username = user['username']
         self.password = user['password']
-    
+
     @staticmethod
     def get_path(album_name):
         home_path = os.path.expanduser('~')
@@ -28,7 +29,7 @@ class qqzone(object):
         if not os.path.isdir(path):
             os.makedirs(path)
         return path
-    
+
     def _login_and_get_args(self):
         """登录QQ，获取Cookies和g_tk"""
         opt = webdriver.ChromeOptions()
@@ -51,10 +52,12 @@ class qqzone(object):
 
         try:
             logging.info('Getting g_tk...')
-            self.g_tk = driver.execute_script('return QZONE.FP.getACSRFToken()')
+            self.g_tk = driver.execute_script(
+                'return QZONE.FP.getACSRFToken()')
             logging.debug('g_tk: {}'.format(self.g_tk))
         except WebDriverException:
-            logging.error('Getting g_tk failed, please check your QQ number and password')
+            logging.error(
+                'Getting g_tk failed, please check your QQ number and password')
             driver.close()
             driver.quit()
             sys.exit(1)
@@ -64,7 +67,7 @@ class qqzone(object):
 
         driver.close()
         driver.quit()
-    
+
     def _init_session(self):
         self.session = requests.Session()
         for cookie in self.cookies:
@@ -73,10 +76,10 @@ class qqzone(object):
             'Referer': 'https://qzs.qq.com/qzone/photo/v7/page/photo.html?init=photo.v7/module/albumList/index&navBar=1',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.109 Safari/537.36'
         }
-    
+
     def _get_query_for_request(self, topicId=None, pageStart=0, pageNum=100):
         """获取请求相册信息或照片信息所需的参数
-        
+
         Args:
             topicId: 每个相册对应的唯一标识符
             pageStart: 请求某个相册的照片列表信息所需的起始页码
@@ -101,7 +104,7 @@ class qqzone(object):
             query['pageStart'] = pageStart
             query['pageNum'] = pageNum
         return '&'.join('{}={}'.format(key, val) for key, val in query.items())
-    
+
     def _load_callback_data(self, resp):
         """以json格式解析返回的jsonp数据"""
         try:
@@ -113,7 +116,8 @@ class qqzone(object):
 
     def _get_ablum_list(self):
         """获取相册的列表信息"""
-        album_url = 'https://h5.qzone.qq.com/proxy/domain/photo.qzone.qq.com/fcgi-bin/fcg_list_album_v3?' + self._get_query_for_request()
+        album_url = 'https://h5.qzone.qq.com/proxy/domain/photo.qzone.qq.com/fcgi-bin/fcg_list_album_v3?' + \
+            self._get_query_for_request()
 
         logging.info('Getting ablum list id...')
         resp = self.session.get(album_url)
@@ -127,7 +131,8 @@ class qqzone(object):
 
     def _get_photo(self, album_name, album_id):
         """获取单个相册的照片列表信息，并下载该相册所有照片"""
-        photo_list_url = 'https://h5.qzone.qq.com/proxy/domain/photo.qzone.qq.com/fcgi-bin/cgi_list_photo?' + self._get_query_for_request(topicId=album_id)
+        photo_list_url = 'https://h5.qzone.qq.com/proxy/domain/photo.qzone.qq.com/fcgi-bin/cgi_list_photo?' + \
+            self._get_query_for_request(topicId=album_id)
 
         logging.info('Getting photo list for album {}...'.format(album_name))
         resp = self.session.get(photo_list_url)
@@ -140,7 +145,7 @@ class qqzone(object):
             path = '{}/{}.jpg'.format(file_dir, item['name'])
             logging.info('Downloading {}-{}'.format(album_name, item['name']))
             self._download_image(item['url'], path)
-    
+
     def _download_image(self, url, path):
         """下载单张照片"""
         try:
@@ -172,7 +177,7 @@ def get_user():
 
     import getpass
     password = getpass.getpass('password: ')
-    
+
     return {
         'username': username,
         'password': password
@@ -188,7 +193,7 @@ def main():
         'username': '123456789',
         'password': '*********'
     }
-    
+
     # 加 -d 参数可以使用上面的默认账户，默认信息请自行修改
     if not (len(sys.argv) > 1 and sys.argv[1] == '-d'):
         user = get_user()
@@ -199,4 +204,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

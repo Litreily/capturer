@@ -86,7 +86,7 @@ class HuabanDownloaderMiddleware(object):
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
-        
+
         # Must either;
         # - return a Response object
         # - return a Request object

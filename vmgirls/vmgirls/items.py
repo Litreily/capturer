@@ -16,6 +16,7 @@ class VmgirlsItem(Item):
     theme_titles = Field()
     pass
 
+
 class VmgirlsImagesItem(Item):
     image_urls = Field()
     title = Field()

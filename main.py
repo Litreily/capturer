@@ -14,7 +14,7 @@ if __name__ == '__main__':
     }
 
     tips = 'please select web you want to caputer(1-{0}, default=1)\n'.format(len(webs)) + \
-           ''.join([ "\t{0} - {1}\n".format(i, webs.get(i)) for i in webs ]) + \
+           ''.join(["\t{0} - {1}\n".format(i, webs.get(i)) for i in webs]) + \
            'You want to captuer from: '
 
     select = input(tips)

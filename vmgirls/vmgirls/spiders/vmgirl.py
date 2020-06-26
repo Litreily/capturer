@@ -9,6 +9,7 @@ from scrapy.utils.project import get_project_settings
 
 import os
 
+
 class VmgirlSpider(scrapy.Spider):
     name = 'vmgirl'
     allowed_domains = ['vmgirls.com']
@@ -21,7 +22,8 @@ class VmgirlSpider(scrapy.Spider):
     def parse(self, response):
         '''Parse sitemap'''
         urls = response.xpath('//*[@id="content"][1]/ul/li/a/@href').extract()
-        titles = response.xpath('//*[@id="content"][1]/ul/li/a/text()').extract()
+        titles = response.xpath(
+            '//*[@id="content"][1]/ul/li/a/text()').extract()
 
         item = VmgirlsItem()
         item['theme_urls'] = urls
@@ -37,7 +39,8 @@ class VmgirlSpider(scrapy.Spider):
 
     def parse_page(self, response):
         '''Parse each page of girls'''
-        urls = response.xpath('//*[@class="post-content"]//img/@data-src').extract()
+        urls = response.xpath(
+            '//*[@class="post-content"]//img/@data-src').extract()
         item = VmgirlsImagesItem()
         item['image_urls'] = urls
         item['title'] = response.meta['title']

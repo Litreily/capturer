@@ -47,15 +47,16 @@ class UserboardsspiderSpider(Spider):
             item['like_count'] = board['like_count']
             yield item
 
-            board_url = '{0}/boards/{1}'.format(self.hostname, board['board_id'])
+            board_url = '{0}/boards/{1}'.format(self.hostname,
+                                                board['board_id'])
             yield Request(board_url, meta={'board_title': board['title']}, callback=self.parse_pins)
-        
+
         # Get more boards info
         # Request parameters:
         #   max: the last board_id get from boards
         #   limit: default 10, it's the limit number of boards, can be modified
-        board_req = '{0}/{1}/?jg0gcj0&max={2}&limit={3}&wfl=1'.format(self.hostname, 
-        self.username, boards[-1]['board_id'], 10)
+        board_req = '{0}/{1}/?jg0gcj0&max={2}&limit={3}&wfl=1'.format(self.hostname,
+                                                                      self.username, boards[-1]['board_id'], 10)
         yield Request(board_req, callback=self.parse)
 
     def parse_pins(self, response):
@@ -76,7 +77,7 @@ class UserboardsspiderSpider(Spider):
             item['source'] = pin['source']
             item['tags'] = pin['tags']
             yield item
-        
+
         # Get more pins info
         # Request parameters:
         #   max: the last pin_id get from pins

@@ -23,7 +23,7 @@ def _get_path(uid):
 
 def _get_html(url, headers):
     try:
-        req = urllib.request.Request(url, headers = headers)
+        req = urllib.request.Request(url, headers=headers)
         page = urllib.request.urlopen(req)
         html = page.read().decode('UTF-8')
     except Exception as e:
@@ -46,7 +46,8 @@ def _capture_images(uid, headers, path):
 
     print('start capture picture of uid:' + uid)
     while True:
-        url = 'https://weibo.cn/%s/profile?filter=%s&page=%d' % (uid, filter_mode, num_pages)
+        url = 'https://weibo.cn/%s/profile?filter=%s&page=%d' % (
+            uid, filter_mode, num_pages)
 
         # 1. get html of each page url
         html = _get_html(url, headers)
@@ -57,7 +58,8 @@ def _capture_images(uid, headers, path):
         # 2. parse the html and find all the imgList Url of each page
         soup = BeautifulSoup(html, "lxml")
         # <div class="c" id="M_G4gb5pY8t"><div>
-        blogs = soup.body.find_all(attrs={'id':re.compile(r'^M_')}, recursive=False)
+        blogs = soup.body.find_all(
+            attrs={'id': re.compile(r'^M_')}, recursive=False)
         num_blogs += len(blogs)
 
         imgurls = []
@@ -74,7 +76,8 @@ def _capture_images(uid, headers, path):
 
         if not imgurls:
             print('capture complete!')
-            print('captured pages:%d, blogs:%d, imgs:%d' % (num_pages, num_blogs, num_imgs))
+            print('captured pages:%d, blogs:%d, imgs:%d' %
+                  (num_pages, num_blogs, num_imgs))
             print('directory:' + path)
             break
 
@@ -85,11 +88,13 @@ def _capture_images(uid, headers, path):
             num_imgs += 1
             count = 1
             try:
-                urllib.request.urlretrieve(imgurl, '{}/{}.{}'.format(path, num_imgs, img[2]))
+                urllib.request.urlretrieve(
+                    imgurl, '{}/{}.{}'.format(path, num_imgs, img[2]))
             except socket.timeout:
                 while count <= 3:
                     try:
-                        urllib.request.urlretrieve(imgurl, '{}/{}.{}'.format(path, num_imgs, img[2]))
+                        urllib.request.urlretrieve(
+                            imgurl, '{}/{}.{}'.format(path, num_imgs, img[2]))
                         break
                     except socket.timeout:
                         count += 1
@@ -104,7 +109,7 @@ def _capture_images(uid, headers, path):
 
 
 def main():
-    uids = ['3261134763','2173752092']
+    uids = ['3261134763', '2173752092']
     uid = uids[0]
     path = _get_path(uid)
     socket.setdefaulttimeout(20)
@@ -112,7 +117,7 @@ def main():
     # cookie is form the above url->network->request headers
     cookies = ''
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-            'Cookie': cookies}
+               'Cookie': cookies}
 
     # capture imgs from sina
     _capture_images(uid, headers, path)
