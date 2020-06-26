@@ -47,11 +47,7 @@ def get_imgs(keyword):
         print('爬取 "{}" 相关表情包第 {} 页:'.format(keyword, page_index))
         img_cnts = download_imgs(imgs, img_cnts, save_dir)
 
-        if page_index == 1:
-            page_num = int(
-                page.xpath('//*[@id="mobilepage"]/text()')[0].split()[-1])
-
-        if page_index == page_num:
+        if page_index == 20 or len(imgs) == 0:
             break
 
     return img_cnts, save_dir
