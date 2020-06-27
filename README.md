@@ -7,9 +7,9 @@ A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
 - [Sina](https://weibo.com/)
 - [Lofter](http://www.lofter.com/)
 - [Toutiao](https://www.toutiao.com)
-- [QQZone](https://qzone.qq.com/)
+- ~~[QQZone](https://qzone.qq.com/)~~: Need verify Captcha
 - [Huaban](https://huaban.com/)
-- [Vmgirls](https://www.vmgirls.com/)
+- ~~[Vmgirls](https://www.vmgirls.com/)~~: Website upgraded
 - [Fabiaoqing](https://www.fabiaoqing.com/)
 
 ## How to use
