@@ -32,6 +32,8 @@ def get_page_json(offset, keyword):
     :rtype: dict
     '''
     params = {
+        'aid': 24,
+        'app_name': 'web_search',
         'offset': offset,
         'format': 'json',
         'keyword': keyword,
@@ -41,7 +43,7 @@ def get_page_json(offset, keyword):
         'from': 'gallery'
     }
 
-    url = 'https://www.toutiao.com/search_content/?' + urlencode(params)
+    url = 'https://www.toutiao.com/api/search/content/?' + urlencode(params)
     try:
         response = requests.get(url, headers=HEADERS)
         if response.status_code == 200:
@@ -58,12 +60,15 @@ def parse_images_url(json):
     data = json['data']
     if data:
         for item in data:
-            title = item['title']
-            images = item['image_list']
+            try:
+                title = item['title']
+                images = item['image_list']
+            except KeyError:
+                continue
             if images:
                 for image in images:
                     yield {
-                        'image': 'http:' + image['url'].replace('list', 'origin'),
+                        'image': image['url'].replace('list', 'origin').replace('190x124/', ''),
                         'title': title
                     }
 
