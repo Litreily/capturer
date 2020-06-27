@@ -11,6 +11,7 @@ A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
 - [Huaban](https://huaban.com/)
 - ~~[Vmgirls](https://www.vmgirls.com/)~~: Website upgraded
 - [Fabiaoqing](https://www.fabiaoqing.com/)
+- `telegram`
 
 ## How to use
 
@@ -21,6 +22,7 @@ A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
   - `lofter`
   - `toutiao`
   - `qqzone`
+  - `telegram`
 - run `huaban/run.py` to capture images from `huaban`
 - run `vmgirls/run.py` to capture images from `vmgirls`
 - run `fabiaoqing/fabiaoqing_spider.py key1 [key2] [key3] ...`
@@ -47,6 +49,12 @@ Almost all of the file path based on `~/Pictures/python`, `~` means home dir.
 - `username`: username of lofter that you want to capture
 - `path`: directory to save the pictures, see the function `_get_path` in `lofter_spider.py`
 - `query_number`: number of blogs in each query packet, default value is 40
+
+### Telegram
+
+- `api_id`: you can get from <https://my.telegram.org/apps>
+- `api_hash`: you can get from <https://my.telegram.org/apps>
+- `socks proxy`: set proxy ip and port, default is `localhost:1080`
 
 ## Blogs
 
