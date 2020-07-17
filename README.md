@@ -2,6 +2,8 @@
 
 A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
 
+> **If you have any suggestions or awesome websites of pictures want to capture, please let me know!!!**
+
 ## Support Websites
 
 - [Sina](https://weibo.com/)
