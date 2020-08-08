@@ -11,7 +11,8 @@ if __name__ == '__main__':
         '2': "lofter",
         '3': "toutiao",
         '4': "qqzone",
-        '5': 'telegram'
+        '5': 'telegram',
+        '6': 'netbian'
     }
 
     tips = 'please select web you want to caputer(1-{0}, default=1)\n'.format(len(webs)) + \

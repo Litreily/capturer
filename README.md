@@ -1,6 +1,6 @@
 # What's Capturer
 
-A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
+A capture tool used to capture pictures from web like Sina, LOFTER, huaban and so on.
 
 > **If you have any suggestions or awesome websites of pictures want to capture, please let me know!!!**
 
@@ -14,6 +14,7 @@ A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
 - ~~[Vmgirls](https://www.vmgirls.com/)~~: Website upgraded
 - [Fabiaoqing](https://www.fabiaoqing.com/)
 - `telegram`
+- [NetBian](http://pic.netbian.com/)
 
 ## How to use
 
@@ -25,6 +26,7 @@ A capture tool used to capture pictures from web like Sina, LOFTER and huaban.
   - `toutiao`
   - `qqzone`
   - `telegram`
+  - `netbian`
 - run `huaban/run.py` to capture images from `huaban`
 - run `vmgirls/run.py` to capture images from `vmgirls`
 - run `fabiaoqing/fabiaoqing_spider.py key1 [key2] [key3] ...`
