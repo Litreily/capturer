@@ -7,7 +7,7 @@ from lxml import html
 from multiprocessing import Pool, cpu_count
 
 
-class Netbian_Spider(object):
+class NetbianSpider(object):
     def __init__(self):
         self.index = 'http://pic.netbian.com'
         self.headers = {
@@ -87,7 +87,7 @@ class Netbian_Spider(object):
 
 
 def main():
-    spider = Netbian_Spider()
+    spider = NetbianSpider()
     categories = spider.get_categories()
 
     p = Pool(cpu_count())
