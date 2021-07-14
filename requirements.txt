@@ -3,4 +3,4 @@ selenium==3.141.0
 Scrapy==2.1.0
 requests==2.20.0
 beautifulsoup4==4.9.1
-Pillow==8.1.1
+Pillow==8.2.0
