@@ -1,4 +1,4 @@
-lxml==4.6.3
+lxml==4.6.5
 selenium==3.141.0
 Scrapy==2.5.1
 requests==2.20.0
